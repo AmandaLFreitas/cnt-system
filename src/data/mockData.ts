@@ -1,4 +1,3 @@
-
 import { Student, AttendanceRecord, Course, ClassSchedule } from '../types';
 
 export const mockSchedules: ClassSchedule[] = [
@@ -22,6 +21,13 @@ export const mockSchedules: ClassSchedule[] = [
     days: ['saturday'],
     times: ['08:00-10:00', '10:00-12:00'],
     hoursPerClass: 2
+  },
+  {
+    id: '4',
+    name: 'Horário Personalizado',
+    days: [],
+    times: [],
+    hoursPerClass: 0
   }
 ];
 
@@ -56,7 +62,14 @@ export const mockStudents: Student[] = [
     course: 'Marketing Digital',
     courseStartDate: '2024-01-20',
     email: 'maria.eduarda@email.com',
-    scheduleId: '3'
+    scheduleId: '4',
+    customSchedule: {
+      days: ['tuesday', 'thursday'],
+      hoursPerDay: {
+        tuesday: 2,
+        thursday: 3
+      }
+    }
   },
   {
     id: '4',
@@ -66,7 +79,15 @@ export const mockStudents: Student[] = [
     course: 'Desenvolvimento Web Full Stack',
     courseStartDate: '2024-01-15',
     email: 'carlos.eduardo@email.com',
-    scheduleId: '1'
+    scheduleId: '4',
+    customSchedule: {
+      days: ['monday', 'wednesday', 'friday'],
+      hoursPerDay: {
+        monday: 1,
+        wednesday: 2,
+        friday: 1
+      }
+    }
   },
   {
     id: '5',
@@ -77,7 +98,13 @@ export const mockStudents: Student[] = [
     course: 'Design Gráfico e UX/UI',
     courseStartDate: '2024-02-01',
     email: 'beatriz.almeida@email.com',
-    scheduleId: '2'
+    scheduleId: '4',
+    customSchedule: {
+      days: ['saturday'],
+      hoursPerDay: {
+        saturday: 4
+      }
+    }
   }
 ];
 

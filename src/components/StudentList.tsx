@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Student, ClassSchedule } from '../types';
+import { Student, ClassSchedule, WeekDay } from '../types';
 import { mockStudents, mockSchedules } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,9 +34,44 @@ const StudentList = ({ onSelectStudent, onShowAttendance, onShowDetails }: Stude
     return age;
   };
 
-  const getScheduleName = (scheduleId: string) => {
-    const schedule = schedules.find(s => s.id === scheduleId);
-    return schedule?.name || 'Não definido';
+  const getDayName = (day: WeekDay) => {
+    const dayNames = {
+      'monday': 'Seg',
+      'tuesday': 'Ter',
+      'wednesday': 'Qua',
+      'thursday': 'Qui',
+      'friday': 'Sex',
+      'saturday': 'Sáb'
+    };
+    return dayNames[day];
+  };
+
+  const getScheduleInfo = (student: Student) => {
+    if (student.scheduleId === '4' && student.customSchedule) {
+      const totalHours = Object.values(student.customSchedule.hoursPerDay).reduce((total, hours) => total + (hours || 0), 0);
+      const daysStr = student.customSchedule.days.map(day => getDayName(day)).join(', ');
+      return {
+        name: `Personalizado (${daysStr})`,
+        weeklyHours: totalHours,
+        isCustom: true
+      };
+    }
+    
+    const schedule = schedules.find(s => s.id === student.scheduleId);
+    if (schedule) {
+      const weeklyHours = schedule.days.length * schedule.hoursPerClass;
+      return {
+        name: schedule.name,
+        weeklyHours,
+        isCustom: false
+      };
+    }
+    
+    return {
+      name: 'Não definido',
+      weeklyHours: 0,
+      isCustom: false
+    };
   };
 
   return (
@@ -58,6 +93,7 @@ const StudentList = ({ onSelectStudent, onShowAttendance, onShowDetails }: Stude
       <div className="grid gap-6">
         {students.map((student) => {
           const isMinor = calculateAge(student.birthDate) < 18;
+          const scheduleInfo = getScheduleInfo(student);
           
           return (
             <Card key={student.id} className="hover:shadow-lg transition-shadow duration-200 border border-gray-200">
@@ -74,6 +110,11 @@ const StudentList = ({ onSelectStudent, onShowAttendance, onShowDetails }: Stude
                         {isMinor && (
                           <Badge className="bg-orange-100 text-orange-800 border-orange-200 text-xs">
                             Menor
+                          </Badge>
+                        )}
+                        {scheduleInfo.isCustom && (
+                          <Badge className="bg-purple-100 text-purple-800 border-purple-200 text-xs">
+                            Personalizado
                           </Badge>
                         )}
                       </div>
@@ -133,7 +174,13 @@ const StudentList = ({ onSelectStudent, onShowAttendance, onShowDetails }: Stude
                   <div className="flex items-center space-x-2 text-sm">
                     <Clock className="h-4 w-4 text-gray-600" />
                     <span className="text-gray-600">Horário:</span>
-                    <span className="font-medium">{getScheduleName(student.scheduleId)}</span>
+                    <span className="font-medium">{scheduleInfo.name}</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Clock className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-600">Horas/semana:</span>
+                    <span className="font-medium">{scheduleInfo.weeklyHours}h</span>
                   </div>
                 </div>
                 

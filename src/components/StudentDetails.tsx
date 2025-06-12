@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Student, Course, ClassSchedule } from '../types';
+import { Student, Course, ClassSchedule, WeekDay } from '../types';
 import { mockCourses, mockSchedules } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -46,18 +46,30 @@ const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
     return age;
   };
 
-  const getDayName = (day: string) => {
+  const getDayName = (day: WeekDay) => {
     const dayNames = {
       'monday': 'Segunda',
       'tuesday': 'Terça',
       'wednesday': 'Quarta',
       'thursday': 'Quinta',
+      'friday': 'Sexta',
       'saturday': 'Sábado'
     };
-    return dayNames[day as keyof typeof dayNames];
+    return dayNames[day];
+  };
+
+  const getTotalWeeklyHours = () => {
+    if (student.customSchedule) {
+      return Object.values(student.customSchedule.hoursPerDay).reduce((total, hours) => total + (hours || 0), 0);
+    }
+    if (studentSchedule) {
+      return studentSchedule.days.length * studentSchedule.hoursPerClass;
+    }
+    return 0;
   };
 
   const isMinor = calculateAge(student.birthDate) < 18;
+  const isCustomSchedule = student.scheduleId === '4' && student.customSchedule;
 
   return (
     <div className="space-y-6">
@@ -181,17 +193,57 @@ const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {studentSchedule ? (
+          {isCustomSchedule ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Horário Personalizado</h3>
+                  <p className="text-sm text-gray-600">
+                    {getTotalWeeklyHours()}h por semana
+                  </p>
+                </div>
+                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                  Personalizado
+                </Badge>
+              </div>
+              
+              <div className="grid gap-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Cronograma Semanal</label>
+                  <div className="grid gap-2 mt-2">
+                    {student.customSchedule.days.map((day) => {
+                      const hours = student.customSchedule?.hoursPerDay[day] || 0;
+                      return (
+                        <div key={day} className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                              {getDayName(day)}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Clock className="h-4 w-4 text-purple-600" />
+                            <span className="text-sm font-semibold text-purple-900">
+                              {hours}h
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : studentSchedule ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">{studentSchedule.name}</h3>
                   <p className="text-sm text-gray-600">
-                    {studentSchedule.hoursPerClass}h por aula
+                    {studentSchedule.hoursPerClass}h por aula - {getTotalWeeklyHours()}h por semana
                   </p>
                 </div>
                 <Badge className="bg-green-100 text-green-800 border-green-200">
-                  Ativo
+                  Padrão
                 </Badge>
               </div>
               

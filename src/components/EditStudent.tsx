@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Save, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import CustomScheduleEditor from './CustomScheduleEditor';
 
 interface EditStudentProps {
   student: Student;
@@ -25,6 +26,24 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
+    }));
+  };
+
+  const handleScheduleChange = (scheduleId: string) => {
+    const newFormData = { ...formData, scheduleId };
+    
+    // Se não for horário personalizado, limpar customSchedule
+    if (scheduleId !== '4') {
+      delete newFormData.customSchedule;
+    }
+    
+    setFormData(newFormData);
+  };
+
+  const handleCustomScheduleChange = (customSchedule: any) => {
+    setFormData(prev => ({
+      ...prev,
+      customSchedule
     }));
   };
 
@@ -51,6 +70,7 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
 
   const isMinor = calculateAge(formData.birthDate) < 18;
   const selectedSchedule = schedules.find(s => s.id === formData.scheduleId);
+  const isCustomSchedule = formData.scheduleId === '4';
 
   return (
     <div className="space-y-6">
@@ -165,10 +185,10 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Selecionar Horário</Label>
+            <Label>Selecionar Tipo de Horário</Label>
             <Select
               value={formData.scheduleId}
-              onValueChange={(value) => handleInputChange('scheduleId', value)}
+              onValueChange={handleScheduleChange}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione um horário" />
@@ -176,20 +196,28 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
               <SelectContent>
                 {schedules.map((schedule) => (
                   <SelectItem key={schedule.id} value={schedule.id}>
-                    {schedule.name} - {schedule.hoursPerClass}h por aula
+                    {schedule.name}
+                    {schedule.hoursPerClass > 0 && ` - ${schedule.hoursPerClass}h por aula`}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           
-          {selectedSchedule && (
+          {selectedSchedule && !isCustomSchedule && (
             <div className="p-4 bg-gray-50 rounded-lg">
               <p className="text-sm font-medium text-gray-700 mb-2">Horário Selecionado:</p>
               <p className="text-sm text-gray-600">
                 <strong>{selectedSchedule.name}</strong> - {selectedSchedule.times.join(', ')}
               </p>
             </div>
+          )}
+          
+          {isCustomSchedule && (
+            <CustomScheduleEditor
+              schedule={formData.customSchedule}
+              onChange={handleCustomScheduleChange}
+            />
           )}
         </CardContent>
       </Card>

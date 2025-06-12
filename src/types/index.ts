@@ -9,7 +9,15 @@ export interface Student {
   courseStartDate: string;
   email?: string;
   scheduleId: string; // Referência ao horário
+  customSchedule?: StudentSchedule; // Horário personalizado
 }
+
+export interface StudentSchedule {
+  days: WeekDay[];
+  hoursPerDay: { [key in WeekDay]?: number };
+}
+
+export type WeekDay = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 
 export interface AttendanceRecord {
   id: string;
@@ -30,7 +38,7 @@ export interface Course {
 export interface ClassSchedule {
   id: string;
   name: string;
-  days: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'saturday')[];
+  days: WeekDay[];
   times: string[];
   hoursPerClass: number;
 }
