@@ -7,9 +7,11 @@ import AttendanceSheet from '../components/AttendanceSheet';
 import StudentFrequency from '../components/StudentFrequency';
 import StudentDetails from '../components/StudentDetails';
 import EditStudent from '../components/EditStudent';
+import ScheduleView from '../components/ScheduleView';
+import Reports from '../components/Reports';
 import { GraduationCap, Users, Calendar, BarChart3 } from 'lucide-react';
 
-type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit';
+type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'schedule' | 'reports';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('list');
@@ -40,6 +42,14 @@ const Index = () => {
     setCurrentView('attendance');
   };
 
+  const handleShowSchedule = () => {
+    setCurrentView('schedule');
+  };
+
+  const handleShowReports = () => {
+    setCurrentView('reports');
+  };
+
   const handleBack = () => {
     setCurrentView('list');
     setSelectedStudent(null);
@@ -47,6 +57,13 @@ const Index = () => {
 
   const handleBackToDetails = () => {
     setCurrentView('details');
+  };
+
+  const isNavActive = (view: View) => {
+    if (view === 'list') return currentView === 'list' || currentView === 'details' || currentView === 'edit' || currentView === 'frequency';
+    if (view === 'attendance') return currentView === 'attendance' || currentView === 'schedule';
+    if (view === 'reports') return currentView === 'reports';
+    return false;
   };
 
   return (
@@ -66,18 +83,39 @@ const Index = () => {
             </div>
             
             <nav className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <button
+                onClick={() => setCurrentView('list')}
+                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                  isNavActive('list') 
+                    ? 'bg-blue-100 text-blue-700 font-medium' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
                 <Users className="h-4 w-4" />
                 <span>Gestão de Alunos</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              </button>
+              <button
+                onClick={handleShowSchedule}
+                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                  isNavActive('attendance') 
+                    ? 'bg-blue-100 text-blue-700 font-medium' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
                 <Calendar className="h-4 w-4" />
                 <span>Controle de Presença</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              </button>
+              <button
+                onClick={handleShowReports}
+                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                  isNavActive('reports') 
+                    ? 'bg-blue-100 text-blue-700 font-medium' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
                 <BarChart3 className="h-4 w-4" />
                 <span>Relatórios</span>
-              </div>
+              </button>
             </nav>
           </div>
         </div>
@@ -95,6 +133,14 @@ const Index = () => {
         
         {currentView === 'attendance' && (
           <AttendanceSheet onBack={handleBack} />
+        )}
+        
+        {currentView === 'schedule' && (
+          <ScheduleView onBack={handleBack} />
+        )}
+        
+        {currentView === 'reports' && (
+          <Reports onBack={handleBack} />
         )}
         
         {currentView === 'frequency' && selectedStudent && (

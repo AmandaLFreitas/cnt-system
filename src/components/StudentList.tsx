@@ -81,13 +81,23 @@ const StudentList = ({ onSelectStudent, onShowAttendance, onShowDetails }: Stude
           <h2 className="text-3xl font-bold text-gray-900">Lista de Alunos</h2>
           <p className="text-gray-600 mt-1">Gerencie os alunos e visualize informações completas</p>
         </div>
-        <Button 
-          onClick={onShowAttendance}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
-        >
-          <Calendar className="mr-2 h-4 w-4" />
-          Fazer Chamada
-        </Button>
+        <div className="flex space-x-3">
+          <Button 
+            onClick={onShowAttendance}
+            variant="outline"
+            className="border-green-200 text-green-700 hover:bg-green-50 px-6 py-2"
+          >
+            <Clock className="mr-2 h-4 w-4" />
+            Ver por Horário
+          </Button>
+          <Button 
+            onClick={onShowAttendance}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+          >
+            <Calendar className="mr-2 h-4 w-4" />
+            Fazer Chamada
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6">
