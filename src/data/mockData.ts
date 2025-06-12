@@ -1,41 +1,83 @@
 
-import { Student, AttendanceRecord, Course } from '../types';
+import { Student, AttendanceRecord, Course, ClassSchedule } from '../types';
+
+export const mockSchedules: ClassSchedule[] = [
+  {
+    id: '1',
+    name: 'Manhã (Seg-Qui)',
+    days: ['monday', 'tuesday', 'wednesday', 'thursday'],
+    times: ['08:00-09:00', '09:00-10:00', '10:00-11:00'],
+    hoursPerClass: 1
+  },
+  {
+    id: '2',
+    name: 'Tarde (Seg-Qui)',
+    days: ['monday', 'tuesday', 'wednesday', 'thursday'],
+    times: ['13:30-14:30', '14:30-15:30', '15:30-16:30', '16:30-17:30'],
+    hoursPerClass: 1
+  },
+  {
+    id: '3',
+    name: 'Sábado Manhã',
+    days: ['saturday'],
+    times: ['08:00-10:00', '10:00-12:00'],
+    hoursPerClass: 2
+  }
+];
 
 export const mockStudents: Student[] = [
   {
     id: '1',
     fullName: 'Ana Clara Silva Santos',
-    birthDate: '1995-03-15',
+    guardian: 'Maria Silva Santos',
+    phone: '(11) 99999-1234',
+    birthDate: '2005-03-15',
     course: 'Desenvolvimento Web Full Stack',
-    email: 'ana.clara@email.com'
+    courseStartDate: '2024-01-15',
+    email: 'ana.clara@email.com',
+    scheduleId: '1'
   },
   {
     id: '2',
     fullName: 'João Pedro Oliveira Costa',
+    phone: '(11) 98888-5678',
     birthDate: '1998-07-22',
     course: 'Design Gráfico e UX/UI',
-    email: 'joao.pedro@email.com'
+    courseStartDate: '2024-02-01',
+    email: 'joao.pedro@email.com',
+    scheduleId: '2'
   },
   {
     id: '3',
     fullName: 'Maria Eduarda Ferreira Lima',
-    birthDate: '1997-11-08',
+    guardian: 'José Ferreira Lima',
+    phone: '(11) 97777-9012',
+    birthDate: '2006-11-08',
     course: 'Marketing Digital',
-    email: 'maria.eduarda@email.com'
+    courseStartDate: '2024-01-20',
+    email: 'maria.eduarda@email.com',
+    scheduleId: '3'
   },
   {
     id: '4',
     fullName: 'Carlos Eduardo Pereira Souza',
+    phone: '(11) 96666-3456',
     birthDate: '1996-05-30',
     course: 'Desenvolvimento Web Full Stack',
-    email: 'carlos.eduardo@email.com'
+    courseStartDate: '2024-01-15',
+    email: 'carlos.eduardo@email.com',
+    scheduleId: '1'
   },
   {
     id: '5',
     fullName: 'Beatriz Almeida Rodrigues',
-    birthDate: '1999-09-12',
+    guardian: 'Ana Almeida Rodrigues',
+    phone: '(11) 95555-7890',
+    birthDate: '2007-09-12',
     course: 'Design Gráfico e UX/UI',
-    email: 'beatriz.almeida@email.com'
+    courseStartDate: '2024-02-01',
+    email: 'beatriz.almeida@email.com',
+    scheduleId: '2'
   }
 ];
 

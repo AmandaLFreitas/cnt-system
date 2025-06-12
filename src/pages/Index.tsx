@@ -1,20 +1,39 @@
 
 import { useState } from 'react';
 import { Student } from '../types';
+import { mockStudents } from '../data/mockData';
 import StudentList from '../components/StudentList';
 import AttendanceSheet from '../components/AttendanceSheet';
 import StudentFrequency from '../components/StudentFrequency';
+import StudentDetails from '../components/StudentDetails';
+import EditStudent from '../components/EditStudent';
 import { GraduationCap, Users, Calendar, BarChart3 } from 'lucide-react';
 
-type View = 'list' | 'attendance' | 'frequency';
+type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('list');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [students, setStudents] = useState<Student[]>(mockStudents);
 
   const handleSelectStudent = (student: Student) => {
     setSelectedStudent(student);
     setCurrentView('frequency');
+  };
+
+  const handleShowDetails = (student: Student) => {
+    setSelectedStudent(student);
+    setCurrentView('details');
+  };
+
+  const handleEditStudent = (student: Student) => {
+    setSelectedStudent(student);
+    setCurrentView('edit');
+  };
+
+  const handleSaveStudent = (updatedStudent: Student) => {
+    setStudents(prev => prev.map(s => s.id === updatedStudent.id ? updatedStudent : s));
+    setCurrentView('details');
   };
 
   const handleShowAttendance = () => {
@@ -24,6 +43,10 @@ const Index = () => {
   const handleBack = () => {
     setCurrentView('list');
     setSelectedStudent(null);
+  };
+
+  const handleBackToDetails = () => {
+    setCurrentView('details');
   };
 
   return (
@@ -66,6 +89,7 @@ const Index = () => {
           <StudentList 
             onSelectStudent={handleSelectStudent}
             onShowAttendance={handleShowAttendance}
+            onShowDetails={handleShowDetails}
           />
         )}
         
@@ -77,6 +101,22 @@ const Index = () => {
           <StudentFrequency 
             student={selectedStudent} 
             onBack={handleBack} 
+          />
+        )}
+        
+        {currentView === 'details' && selectedStudent && (
+          <StudentDetails
+            student={selectedStudent}
+            onBack={handleBack}
+            onEdit={handleEditStudent}
+          />
+        )}
+        
+        {currentView === 'edit' && selectedStudent && (
+          <EditStudent
+            student={selectedStudent}
+            onBack={handleBackToDetails}
+            onSave={handleSaveStudent}
           />
         )}
       </main>
