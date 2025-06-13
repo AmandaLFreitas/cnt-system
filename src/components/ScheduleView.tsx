@@ -4,8 +4,8 @@ import { Student, WeekDay, AVAILABLE_TIMES } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, Calendar, Users, Monitor, User } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowLeft, Calendar, Users, Monitor, User, Clock, Eye } from 'lucide-react';
 
 interface ScheduleViewProps {
   students: Student[];
@@ -13,86 +13,134 @@ interface ScheduleViewProps {
 }
 
 const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
+  const [selectedDay, setSelectedDay] = useState<WeekDay>('monday');
+  const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const TOTAL_COMPUTERS = 14;
 
   const getDayName = (day: WeekDay) => {
     const dayNames = {
-      'monday': 'Segunda',
-      'tuesday': 'Terça',
-      'wednesday': 'Quarta',
-      'thursday': 'Quinta',
-      'friday': 'Sexta',
+      'monday': 'Segunda-feira',
+      'tuesday': 'Terça-feira',
+      'wednesday': 'Quarta-feira',
+      'thursday': 'Quinta-feira',
+      'friday': 'Sexta-feira',
       'saturday': 'Sábado'
     };
     return dayNames[day];
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+  const getShortDayName = (day: WeekDay) => {
+    const dayNames = {
+      'monday': 'SEG',
+      'tuesday': 'TER',
+      'wednesday': 'QUA',
+      'thursday': 'QUI',
+      'friday': 'SEX',
+      'saturday': 'SÁB'
+    };
+    return dayNames[day];
   };
 
-  // Criar estrutura da grade horária
-  const scheduleGrid = useMemo(() => {
-    const grid: { [key: string]: { [timeSlot: string]: Student[] } } = {};
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  };
+
+  // Agrupar alunos por horário para um dia específico
+  const getStudentsByTimeSlot = (day: WeekDay) => {
+    const timeSlotMap: { [timeSlotId: string]: Student[] } = {};
     
-    // Inicializar grid
-    Object.keys(AVAILABLE_TIMES).forEach(day => {
-      grid[day] = {};
-      AVAILABLE_TIMES[day as WeekDay].forEach(timeSlot => {
-        grid[day][timeSlot.id] = [];
-      });
+    AVAILABLE_TIMES[day].forEach(timeSlot => {
+      timeSlotMap[timeSlot.id] = [];
     });
 
-    // Preencher com alunos
     students.filter(student => !student.isCompleted).forEach(student => {
-      if (student.schedule) {
-        Object.entries(student.schedule).forEach(([day, timeSlots]) => {
-          if (timeSlots && timeSlots.length > 0) {
-            timeSlots.forEach(timeSlotId => {
-              if (grid[day] && grid[day][timeSlotId]) {
-                grid[day][timeSlotId].push(student);
-              }
-            });
+      if (student.schedule?.[day]) {
+        student.schedule[day].forEach(timeSlotId => {
+          if (timeSlotMap[timeSlotId]) {
+            timeSlotMap[timeSlotId].push(student);
           }
         });
       }
     });
 
-    return grid;
-  }, [students]);
+    return timeSlotMap;
+  };
 
-  // Obter todos os horários únicos
-  const allTimeSlots = useMemo(() => {
-    const slots: { id: string; time: string; hours: number }[] = [];
-    Object.values(AVAILABLE_TIMES).forEach(daySlots => {
-      daySlots.forEach(slot => {
-        if (!slots.find(s => s.id === slot.id)) {
-          slots.push(slot);
-        }
+  // Obter resumo de ocupação por dia
+  const getDayOccupancy = () => {
+    const activeDays = Object.keys(AVAILABLE_TIMES).filter(
+      day => AVAILABLE_TIMES[day as WeekDay].length > 0
+    ) as WeekDay[];
+
+    return activeDays.map(day => {
+      const studentsInDay = students.filter(student => 
+        !student.isCompleted && 
+        student.schedule?.[day] && 
+        student.schedule[day].length > 0
+      );
+
+      const timeSlots = AVAILABLE_TIMES[day];
+      let totalSlots = 0;
+      let occupiedSlots = 0;
+
+      timeSlots.forEach(timeSlot => {
+        const studentsInSlot = students.filter(student => 
+          !student.isCompleted && 
+          student.schedule?.[day]?.includes(timeSlot.id)
+        ).length;
+        
+        totalSlots += TOTAL_COMPUTERS;
+        occupiedSlots += studentsInSlot;
       });
-    });
-    return slots.sort((a, b) => a.time.localeCompare(b.time));
-  }, []);
 
-  const activeDays = Object.keys(AVAILABLE_TIMES).filter(
-    day => AVAILABLE_TIMES[day as WeekDay].length > 0
-  ) as WeekDay[];
+      return {
+        day,
+        studentsCount: studentsInDay.length,
+        occupancy: totalSlots > 0 ? (occupiedSlots / totalSlots) * 100 : 0,
+        timeSlotsCount: timeSlots.length
+      };
+    });
+  };
+
+  const dayOccupancy = getDayOccupancy();
+  const selectedDayData = getStudentsByTimeSlot(selectedDay);
+
+  const getOccupancyColor = (percentage: number) => {
+    if (percentage >= 90) return 'text-red-600 bg-red-100 border-red-200';
+    if (percentage >= 70) return 'text-yellow-600 bg-yellow-100 border-yellow-200';
+    if (percentage >= 40) return 'text-blue-600 bg-blue-100 border-blue-200';
+    return 'text-green-600 bg-green-100 border-green-200';
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <Button variant="outline" onClick={onBack} className="px-3">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900">Grade Horária Completa</h2>
-          <p className="text-gray-600 mt-1">Visualização completa dos horários e alunos</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Button variant="outline" onClick={onBack} className="px-3">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar
+          </Button>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">Grade Horária</h2>
+            <p className="text-gray-600 mt-1">Visualização dinâmica dos horários e ocupação</p>
+          </div>
+        </div>
+
+        <div className="flex space-x-3">
+          <Select value={viewMode} onValueChange={(value: 'day' | 'week') => setViewMode(value)}>
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="week">Visão Semanal</SelectItem>
+              <SelectItem value="day">Visão Diária</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       {/* Resumo Geral */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Monitor className="h-5 w-5" />
@@ -101,146 +149,200 @@ const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-blue-600">{TOTAL_COMPUTERS}</div>
-              <div className="text-sm text-gray-600">Total de Computadores</div>
+            <div className="bg-white rounded-lg p-4 shadow-sm">
+              <div className="text-3xl font-bold text-blue-600">{TOTAL_COMPUTERS}</div>
+              <div className="text-sm text-gray-600">Computadores por Turma</div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-green-600">
+            <div className="bg-white rounded-lg p-4 shadow-sm">
+              <div className="text-3xl font-bold text-green-600">
                 {students.filter(s => !s.isCompleted).length}
               </div>
               <div className="text-sm text-gray-600">Alunos Ativos</div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-purple-600">
-                {students.filter(s => s.isCompleted).length}
+            <div className="bg-white rounded-lg p-4 shadow-sm">
+              <div className="text-3xl font-bold text-purple-600">
+                {dayOccupancy.reduce((sum, day) => sum + day.timeSlotsCount, 0)}
               </div>
-              <div className="text-sm text-gray-600">Alunos Finalizados</div>
+              <div className="text-sm text-gray-600">Turmas Disponíveis</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Grade Horária */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Calendar className="h-5 w-5" />
-            <span>Grade de Horários</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-32">Horário</TableHead>
-                  {activeDays.map(day => (
-                    <TableHead key={day} className="text-center min-w-48">
-                      {getDayName(day)}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {allTimeSlots.map(timeSlot => (
-                  <TableRow key={timeSlot.id}>
-                    <TableCell className="font-medium">
-                      <div>
-                        <div className="text-sm font-semibold">{timeSlot.time}</div>
-                        <div className="text-xs text-gray-500">({timeSlot.hours}h)</div>
+      {viewMode === 'week' ? (
+        /* Visão Semanal - Ocupação por Dia */
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Calendar className="h-5 w-5" />
+              <span>Ocupação Semanal</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dayOccupancy.map((dayData) => (
+                <Card 
+                  key={dayData.day} 
+                  className={`cursor-pointer transition-all hover:shadow-lg ${
+                    selectedDay === dayData.day ? 'ring-2 ring-blue-500' : ''
+                  }`}
+                  onClick={() => {
+                    setSelectedDay(dayData.day);
+                    setViewMode('day');
+                  }}
+                >
+                  <CardContent className="pt-6">
+                    <div className="text-center space-y-3">
+                      <div className="text-lg font-semibold text-gray-900">
+                        {getDayName(dayData.day)}
                       </div>
-                    </TableCell>
-                    {activeDays.map(day => {
-                      const studentsInSlot = scheduleGrid[day]?.[timeSlot.id] || [];
-                      const availableSlots = TOTAL_COMPUTERS - studentsInSlot.length;
-                      const hasTimeSlot = AVAILABLE_TIMES[day].some(slot => slot.id === timeSlot.id);
                       
-                      if (!hasTimeSlot) {
-                        return (
-                          <TableCell key={`${day}-${timeSlot.id}`} className="text-center text-gray-400">
-                            -
-                          </TableCell>
-                        );
-                      }
+                      <div className={`inline-flex items-center px-3 py-1 rounded-full border ${getOccupancyColor(dayData.occupancy)}`}>
+                        <div className="text-2xl font-bold">
+                          {Math.round(dayData.occupancy)}%
+                        </div>
+                      </div>
                       
-                      return (
-                        <TableCell key={`${day}-${timeSlot.id}`} className="p-2">
-                          <div className="space-y-2">
-                            {/* Contadores */}
-                            <div className="flex items-center justify-between text-xs">
-                              <Badge 
-                                variant="outline" 
-                                className={`${studentsInSlot.length > 0 ? 'bg-blue-50 text-blue-700' : 'bg-gray-50 text-gray-500'}`}
-                              >
-                                <Users className="h-3 w-3 mr-1" />
-                                {studentsInSlot.length}/{TOTAL_COMPUTERS}
-                              </Badge>
-                              <span className={`text-xs ${availableSlots > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {availableSlots} vagas
-                              </span>
+                      <div className="space-y-2 text-sm text-gray-600">
+                        <div className="flex items-center justify-center space-x-1">
+                          <Users className="h-4 w-4" />
+                          <span>{dayData.studentsCount} alunos</span>
+                        </div>
+                        <div className="flex items-center justify-center space-x-1">
+                          <Clock className="h-4 w-4" />
+                          <span>{dayData.timeSlotsCount} turmas</span>
+                        </div>
+                      </div>
+
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedDay(dayData.day);
+                          setViewMode('day');
+                        }}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Ver Detalhes
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        /* Visão Diária - Detalhes por Horário */
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Calendar className="h-5 w-5" />
+                  <span>Detalhes de {getDayName(selectedDay)}</span>
+                </div>
+                <Select value={selectedDay} onValueChange={(value: WeekDay) => setSelectedDay(value)}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dayOccupancy.map((dayData) => (
+                      <SelectItem key={dayData.day} value={dayData.day}>
+                        {getDayName(dayData.day)} ({dayData.studentsCount} alunos)
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                {AVAILABLE_TIMES[selectedDay].map((timeSlot) => {
+                  const studentsInSlot = selectedDayData[timeSlot.id] || [];
+                  const occupancyPercentage = (studentsInSlot.length / TOTAL_COMPUTERS) * 100;
+                  const availableSlots = TOTAL_COMPUTERS - studentsInSlot.length;
+
+                  return (
+                    <Card key={timeSlot.id} className="border-l-4 border-l-blue-500">
+                      <CardContent className="pt-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-4">
+                            <div className="text-center">
+                              <div className="text-lg font-semibold text-gray-900">{timeSlot.time}</div>
+                              <div className="text-sm text-gray-500">({timeSlot.hours}h de aula)</div>
                             </div>
                             
-                            {/* Lista de Alunos */}
-                            {studentsInSlot.length > 0 ? (
-                              <div className="space-y-1 max-h-32 overflow-y-auto">
-                                {studentsInSlot.map(student => (
-                                  <div 
-                                    key={student.id} 
-                                    className="text-xs bg-white border rounded p-1 hover:bg-gray-50"
-                                    title={`${student.fullName} - ${student.course} - Início: ${formatDate(student.courseStartDate)}`}
-                                  >
-                                    <div className="flex items-center space-x-1">
-                                      <User className="h-3 w-3 text-blue-600" />
-                                      <span className="truncate font-medium">{student.fullName}</span>
-                                    </div>
-                                    <div className="text-gray-500 truncate">{student.course}</div>
-                                  </div>
-                                ))}
+                            <div className="flex items-center space-x-4">
+                              <Badge 
+                                variant="outline" 
+                                className={`px-3 py-1 ${getOccupancyColor(occupancyPercentage)}`}
+                              >
+                                <Users className="h-4 w-4 mr-1" />
+                                {studentsInSlot.length}/{TOTAL_COMPUTERS}
+                              </Badge>
+                              
+                              <div className="text-sm">
+                                <span className={`font-medium ${
+                                  availableSlots > 0 ? 'text-green-600' : 'text-red-600'
+                                }`}>
+                                  {availableSlots} vagas disponíveis
+                                </span>
                               </div>
-                            ) : (
-                              <div className="text-xs text-gray-400 text-center py-2">
-                                Sem alunos
-                              </div>
-                            )}
+                            </div>
                           </div>
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Legenda */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-sm text-gray-600">
-            <h4 className="font-medium mb-2">Legenda:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-blue-100 border border-blue-200 rounded"></div>
-                <span>Horários com alunos inscritos</span>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-blue-600">
+                              {Math.round(occupancyPercentage)}%
+                            </div>
+                            <div className="text-xs text-gray-500">ocupação</div>
+                          </div>
+                        </div>
+
+                        {studentsInSlot.length > 0 ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {studentsInSlot.map((student) => (
+                              <div 
+                                key={student.id}
+                                className="bg-white border rounded-lg p-3 hover:shadow-md transition-shadow"
+                              >
+                                <div className="flex items-center space-x-3">
+                                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <User className="h-4 w-4 text-blue-600" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-medium text-gray-900 truncate">
+                                      {student.fullName}
+                                    </div>
+                                    <div className="text-sm text-gray-500 truncate">
+                                      {student.course}
+                                    </div>
+                                    <div className="text-xs text-gray-400">
+                                      Início: {formatDate(student.courseStartDate)}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-6 text-gray-400">
+                            <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">Nenhum aluno inscrito neste horário</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-gray-100 border border-gray-200 rounded"></div>
-                <span>Horários sem alunos</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-green-600 font-medium">Verde:</span>
-                <span>Vagas disponíveis</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-red-600 font-medium">Vermelho:</span>
-                <span>Turma lotada</span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </>
+      )}
     </div>
   );
 };

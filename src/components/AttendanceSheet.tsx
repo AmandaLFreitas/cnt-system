@@ -1,7 +1,6 @@
-
 import { useState } from 'react';
 import { Student, AttendanceRecord, WeekDay, AVAILABLE_TIMES } from '../types';
-import { mockStudents, mockAttendance } from '../data/mockData';
+import { mockStudents, mockAttendance, mockCourses } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +15,7 @@ interface AttendanceSheetProps {
 
 const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) => {
   const [students] = useState<Student[]>(mockStudents);
+  const [courses] = useState(mockCourses);
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(mockAttendance);
   
   const [todayAttendance, setTodayAttendance] = useState<Record<string, 'present' | 'absent'>>({});
@@ -24,7 +24,7 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
   const { toast } = useToast();
 
   const today = new Date().toISOString().split('T')[0];
-  const TOTAL_COMPUTERS = 14; // Total de vagas disponíveis
+  const TOTAL_COMPUTERS = 14;
 
   const getDayName = (day: WeekDay) => {
     const dayNames = {
@@ -40,6 +40,11 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
+  };
+
+  const getStudentCourseEndDate = (student: Student) => {
+    const course = courses.find(c => c.name === student.course);
+    return course ? course.endDate : null;
   };
 
   const availableTimeSlots = AVAILABLE_TIMES[selectedDay] || [];
@@ -258,6 +263,7 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
           {filteredStudents.length > 0 ? (
             filteredStudents.map((student) => {
               const attendanceStatus = todayAttendance[student.id];
+              const courseEndDate = getStudentCourseEndDate(student);
               
               return (
                 <Card key={student.id} className="hover:shadow-md transition-shadow duration-200">
@@ -273,8 +279,19 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
                             <Badge variant="secondary" className="bg-gray-100 text-gray-700">
                               {student.course}
                             </Badge>
-                            <div className="text-sm text-gray-600">
-                              <span className="font-medium">Início:</span> {formatDate(student.courseStartDate)}
+                            <div className="text-sm text-gray-600 flex items-center space-x-3">
+                              <div className="flex items-center space-x-1">
+                                <Calendar className="h-3 w-3" />
+                                <span className="font-medium">Início:</span> 
+                                <span>{formatDate(student.courseStartDate)}</span>
+                              </div>
+                              {courseEndDate && (
+                                <div className="flex items-center space-x-1">
+                                  <Calendar className="h-3 w-3" />
+                                  <span className="font-medium">Término:</span> 
+                                  <span>{formatDate(courseEndDate)}</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
