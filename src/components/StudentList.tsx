@@ -1,11 +1,13 @@
 
-import { useState, useMemo } from 'react';
-import { Student, StudentSchedule, WeekDay, AVAILABLE_TIMES } from '../types';
+import { useState } from 'react';
+import { Student } from '../types';
+import { mockCourses } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { User, Calendar, BookOpen, Eye, Phone, Clock, Users, Search } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Users, Search, User, Calendar, BookOpen, Eye, Clock, UserPlus } from 'lucide-react';
 
 interface StudentListProps {
   students: Student[];
@@ -17,14 +19,12 @@ interface StudentListProps {
 
 const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetails, onShowTimeSlots }: StudentListProps) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [courses] = useState(mockCourses);
 
-  const filteredStudents = useMemo(() => {
-    if (!searchTerm) return students;
-    
-    return students.filter(student =>
-      student.fullName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [students, searchTerm]);
+  const filteredStudents = students.filter(student =>
+    student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.course.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
@@ -43,64 +43,29 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
     return age;
   };
 
-  const getDayName = (day: WeekDay) => {
-    const dayNames = {
-      'monday': 'Seg',
-      'tuesday': 'Ter',
-      'wednesday': 'Qua',
-      'thursday': 'Qui',
-      'friday': 'Sex',
-      'saturday': 'Sáb'
-    };
-    return dayNames[day];
-  };
-
-  const getScheduleInfo = (student: Student) => {
-    let totalHours = 0;
-    const days: string[] = [];
-    
-    // Verificar se student.schedule existe e é um objeto válido
-    if (!student.schedule || typeof student.schedule !== 'object') {
-      return {
-        days: 'Não definido',
-        weeklyHours: 0
-      };
-    }
-    
-    Object.entries(student.schedule).forEach(([day, timeIds]) => {
-      if (timeIds && timeIds.length > 0) {
-        days.push(getDayName(day as WeekDay));
-        timeIds.forEach(timeId => {
-          const timeSlot = AVAILABLE_TIMES[day as WeekDay]?.find(slot => slot.id === timeId);
-          if (timeSlot) {
-            totalHours += timeSlot.hours;
-          }
-        });
-      }
-    });
-    
-    return {
-      days: days.join(', ') || 'Não definido',
-      weeklyHours: totalHours
-    };
+  const getStudentCourseInfo = (student: Student) => {
+    const course = courses.find(c => c.name === student.course);
+    return course;
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Lista de Alunos</h2>
-          <p className="text-gray-600 mt-1">Gerencie os alunos e visualize informações completas</p>
+          <h2 className="text-3xl font-bold text-gray-900">Gestão de Alunos</h2>
+          <p className="text-gray-600 mt-1">Gerencie os estudantes ativos da instituição</p>
         </div>
+        
         <div className="flex space-x-3">
           <Button 
             onClick={onShowTimeSlots}
             variant="outline"
-            className="border-green-200 text-green-700 hover:bg-green-50 px-6 py-2"
+            className="border-blue-200 text-blue-700 hover:bg-blue-50"
           >
             <Clock className="mr-2 h-4 w-4" />
-            Ver por Horário
+            Ver Horários
           </Button>
+          
           <Button 
             onClick={onShowAttendance}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
@@ -113,132 +78,115 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Search className="h-5 w-5" />
-            <span>Buscar Aluno</span>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Users className="h-5 w-5" />
+              <span>Lista de Estudantes</span>
+              <Badge className="bg-blue-100 text-blue-800">
+                {students.length} {students.length === 1 ? 'Aluno' : 'Alunos'}
+              </Badge>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Input
-            placeholder="Digite o nome do aluno para buscar..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-md"
-          />
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Buscar por nome ou curso..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            {filteredStudents.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Aluno</TableHead>
+                    <TableHead>Curso</TableHead>
+                    <TableHead>Idade</TableHead>
+                    <TableHead>Data de Início</TableHead>
+                    <TableHead>Data de Término</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredStudents.map((student) => {
+                    const courseInfo = getStudentCourseInfo(student);
+                    return (
+                      <TableRow key={student.id}>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center space-x-2">
+                            <User className="h-4 w-4 text-blue-600" />
+                            <span>{student.fullName}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                            {student.course}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{calculateAge(student.birthDate)} anos</TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="h-4 w-4 text-green-600" />
+                            <span>{formatDate(student.courseStartDate)}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="h-4 w-4 text-red-600" />
+                            <span>
+                              {courseInfo 
+                                ? formatDate(courseInfo.endDate)
+                                : 'Data não disponível'
+                              }
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => onShowDetails(student)}
+                              className="text-blue-600 hover:text-blue-700"
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              Ver Detalhes
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-12">
+                {searchTerm ? (
+                  <div>
+                    <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p className="text-gray-500">Nenhum aluno encontrado com "{searchTerm}"</p>
+                  </div>
+                ) : (
+                  <div>
+                    <UserPlus className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p className="text-gray-500">Nenhum aluno cadastrado ainda</p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      Adicione novos alunos para começar a gerenciar
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
-
-      <div className="grid gap-6">
-        {filteredStudents.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-8">
-              <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-500">
-                {searchTerm ? 'Nenhum aluno encontrado com esse nome' : 'Nenhum aluno cadastrado'}
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredStudents.map((student) => {
-            const isMinor = calculateAge(student.birthDate) < 18;
-            const scheduleInfo = getScheduleInfo(student);
-            
-            return (
-              <Card key={student.id} className="hover:shadow-lg transition-shadow duration-200 border border-gray-200">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <User className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-xl text-gray-900">{student.fullName}</CardTitle>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <p className="text-sm text-gray-500">{calculateAge(student.birthDate)} anos</p>
-                          {isMinor && (
-                            <Badge className="bg-orange-100 text-orange-800 border-orange-200 text-xs">
-                              Menor
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => onShowDetails(student)}
-                        className="border-blue-200 text-blue-700 hover:bg-blue-50"
-                      >
-                        <Eye className="mr-2 h-4 w-4" />
-                        Detalhes
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => onSelectStudent(student)}
-                        className="border-green-200 text-green-700 hover:bg-green-50"
-                      >
-                        Ver Frequência
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-4">
-                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Phone className="h-4 w-4 text-gray-600" />
-                      <span className="text-gray-600">Telefone:</span>
-                      <span className="font-medium">{student.phone}</span>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Calendar className="h-4 w-4 text-gray-600" />
-                      <span className="text-gray-600">Nascimento:</span>
-                      <span className="font-medium">{formatDate(student.birthDate)}</span>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Calendar className="h-4 w-4 text-gray-600" />
-                      <span className="text-gray-600">Início do Curso:</span>
-                      <span className="font-medium">{formatDate(student.courseStartDate)}</span>
-                    </div>
-                    
-                    {isMinor && student.guardian && (
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Users className="h-4 w-4 text-orange-600" />
-                        <span className="text-gray-600">Responsável:</span>
-                        <span className="font-medium">{student.guardian}</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Clock className="h-4 w-4 text-gray-600" />
-                      <span className="text-gray-600">Dias:</span>
-                      <span className="font-medium">{scheduleInfo.days}</span>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Clock className="h-4 w-4 text-gray-600" />
-                      <span className="text-gray-600">Horas/semana:</span>
-                      <span className="font-medium">{scheduleInfo.weeklyHours}h</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <BookOpen className="h-4 w-4 text-gray-600" />
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200">
-                      {student.course}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })
-        )}
-      </div>
     </div>
   );
 };

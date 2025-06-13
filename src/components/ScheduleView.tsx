@@ -1,6 +1,6 @@
-
 import { useState, useMemo } from 'react';
 import { Student, WeekDay, AVAILABLE_TIMES } from '../types';
+import { mockCourses } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,7 @@ interface ScheduleViewProps {
 const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
   const [selectedDay, setSelectedDay] = useState<WeekDay>('monday');
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
+  const [courses] = useState(mockCourses);
   const TOTAL_COMPUTERS = 14;
 
   const getDayName = (day: WeekDay) => {
@@ -43,6 +44,11 @@ const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  };
+
+  const getStudentCourseInfo = (student: Student) => {
+    const course = courses.find(c => c.name === student.course);
+    return course;
   };
 
   // Agrupar alunos por horário para um dia específico
@@ -304,29 +310,41 @@ const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
 
                         {studentsInSlot.length > 0 ? (
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {studentsInSlot.map((student) => (
-                              <div 
-                                key={student.id}
-                                className="bg-white border rounded-lg p-3 hover:shadow-md transition-shadow"
-                              >
-                                <div className="flex items-center space-x-3">
-                                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <User className="h-4 w-4 text-blue-600" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-gray-900 truncate">
-                                      {student.fullName}
+                            {studentsInSlot.map((student) => {
+                              const courseInfo = getStudentCourseInfo(student);
+                              return (
+                                <div 
+                                  key={student.id}
+                                  className="bg-white border rounded-lg p-3 hover:shadow-md transition-shadow"
+                                >
+                                  <div className="flex items-center space-x-3">
+                                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                      <User className="h-4 w-4 text-blue-600" />
                                     </div>
-                                    <div className="text-sm text-gray-500 truncate">
-                                      {student.course}
-                                    </div>
-                                    <div className="text-xs text-gray-400">
-                                      Início: {formatDate(student.courseStartDate)}
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-medium text-gray-900 truncate">
+                                        {student.fullName}
+                                      </div>
+                                      <div className="text-sm text-gray-500 truncate">
+                                        {student.course}
+                                      </div>
+                                      <div className="text-xs text-gray-400 space-y-1">
+                                        <div className="flex items-center space-x-1">
+                                          <Calendar className="h-3 w-3 text-green-600" />
+                                          <span>Início: {formatDate(student.courseStartDate)}</span>
+                                        </div>
+                                        {courseInfo && (
+                                          <div className="flex items-center space-x-1">
+                                            <Calendar className="h-3 w-3 text-red-600" />
+                                            <span>Término: {formatDate(courseInfo.endDate)}</span>
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         ) : (
                           <div className="text-center py-6 text-gray-400">

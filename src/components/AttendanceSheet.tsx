@@ -42,9 +42,9 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
-  const getStudentCourseEndDate = (student: Student) => {
+  const getStudentCourseInfo = (student: Student) => {
     const course = courses.find(c => c.name === student.course);
-    return course ? course.endDate : null;
+    return course;
   };
 
   const availableTimeSlots = AVAILABLE_TIMES[selectedDay] || [];
@@ -263,7 +263,7 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
           {filteredStudents.length > 0 ? (
             filteredStudents.map((student) => {
               const attendanceStatus = todayAttendance[student.id];
-              const courseEndDate = getStudentCourseEndDate(student);
+              const courseInfo = getStudentCourseInfo(student);
               
               return (
                 <Card key={student.id} className="hover:shadow-md transition-shadow duration-200">
@@ -279,17 +279,17 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
                             <Badge variant="secondary" className="bg-gray-100 text-gray-700">
                               {student.course}
                             </Badge>
-                            <div className="text-sm text-gray-600 flex items-center space-x-3">
+                            <div className="text-sm text-gray-600 flex items-center space-x-4">
                               <div className="flex items-center space-x-1">
-                                <Calendar className="h-3 w-3" />
+                                <Calendar className="h-3 w-3 text-green-600" />
                                 <span className="font-medium">Início:</span> 
                                 <span>{formatDate(student.courseStartDate)}</span>
                               </div>
-                              {courseEndDate && (
+                              {courseInfo && (
                                 <div className="flex items-center space-x-1">
-                                  <Calendar className="h-3 w-3" />
+                                  <Calendar className="h-3 w-3 text-red-600" />
                                   <span className="font-medium">Término:</span> 
-                                  <span>{formatDate(courseEndDate)}</span>
+                                  <span>{formatDate(courseInfo.endDate)}</span>
                                 </div>
                               )}
                             </div>
