@@ -112,15 +112,15 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
   const isMinor = calculateAge(formData.birthDate) < 18;
 
   return (
-    <div className="space-y-4 md:space-y-6 p-2 md:p-4">
+    <div className="space-y-4 md:space-y-6 p-4 max-w-6xl mx-auto">
       <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-y-0 md:space-x-4">
         <Button variant="outline" onClick={onBack} className="px-3 w-fit">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
         </Button>
         <div>
-          <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Adicionar Novo Aluno</h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm md:text-base">Cadastre um novo estudante no sistema</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Adicionar Novo Aluno</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Cadastre um novo estudante no sistema</p>
         </div>
       </div>
 
@@ -132,7 +132,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="fullName" className="text-gray-700 dark:text-gray-300">Nome Completo *</Label>
               <Input
@@ -257,7 +257,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
       <div className="flex justify-end">
         <Button 
           onClick={handleSave}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-6 py-2"
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 w-full md:w-auto"
         >
           <Save className="mr-2 h-4 w-4" />
           Cadastrar Aluno

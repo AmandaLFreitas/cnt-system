@@ -120,17 +120,17 @@ const CourseSelector = ({
     : courses.find(c => c.name === selectedCourse);
 
   return (
-    <Card>
+    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
           <BookOpen className="h-5 w-5" />
           <span>Informações do Curso</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Toggle para tipo de curso */}
-        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-          <Label htmlFor="course-type" className="text-sm font-medium">
+        <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <Label htmlFor="course-type" className="text-sm font-medium text-gray-900 dark:text-gray-100">
             Curso pré-cadastrado
           </Label>
           <Switch
@@ -138,28 +138,29 @@ const CourseSelector = ({
             checked={isManualCourse}
             onCheckedChange={handleCourseTypeChange}
           />
-          <Label htmlFor="course-type" className="text-sm font-medium">
+          <Label htmlFor="course-type" className="text-sm font-medium text-gray-900 dark:text-gray-100">
             Curso personalizado
           </Label>
-          <Plus className="h-4 w-4 text-gray-500" />
+          <Plus className="h-4 w-4 text-gray-500 dark:text-gray-400" />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
           {/* Seleção ou entrada do curso */}
           {isManualCourse ? (
             <>
               <div className="space-y-2">
-                <Label htmlFor="manual-course-name">Nome do Curso *</Label>
+                <Label htmlFor="manual-course-name" className="text-gray-700 dark:text-gray-300">Nome do Curso *</Label>
                 <Input
                   id="manual-course-name"
                   value={manualCourseData.name}
                   onChange={(e) => handleManualCourseChange('name', e.target.value)}
                   placeholder="Digite o nome do curso"
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="manual-course-hours">Carga Horária Total *</Label>
+                <Label htmlFor="manual-course-hours" className="text-gray-700 dark:text-gray-300">Carga Horária Total *</Label>
                 <Input
                   id="manual-course-hours"
                   type="number"
@@ -167,19 +168,20 @@ const CourseSelector = ({
                   onChange={(e) => handleManualCourseChange('totalHours', e.target.value)}
                   placeholder="Ex: 80"
                   min="1"
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
             </>
           ) : (
             <div className="space-y-2">
-              <Label htmlFor="course">Curso *</Label>
+              <Label htmlFor="course" className="text-gray-700 dark:text-gray-300">Curso *</Label>
               <Select value={selectedCourse} onValueChange={onCourseChange}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
                   <SelectValue placeholder="Selecione um curso" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
                   {courses.map((course) => (
-                    <SelectItem key={course.id} value={course.name}>
+                    <SelectItem key={course.id} value={course.name} className="text-gray-900 dark:text-gray-100">
                       {course.name} ({course.totalHours}h)
                     </SelectItem>
                   ))}
@@ -189,43 +191,44 @@ const CourseSelector = ({
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="courseStartDate">Data de Início do Curso *</Label>
+            <Label htmlFor="courseStartDate" className="text-gray-700 dark:text-gray-300">Data de Início do Curso *</Label>
             <Input
               id="courseStartDate"
               type="date"
               value={courseStartDate}
               onChange={(e) => onStartDateChange(e.target.value)}
+              className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
             />
           </div>
 
           {selectedCourseData && selectedCourseData.totalHours > 0 && (
             <>
               <div className="space-y-2">
-                <Label>Carga Horária Total</Label>
-                <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-md">
+                <Label className="text-gray-700 dark:text-gray-300">Carga Horária Total</Label>
+                <div className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-700 rounded-md">
                   <Clock className="h-4 w-4 text-blue-600" />
-                  <span className="font-semibold">{selectedCourseData.totalHours}h</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-100">{selectedCourseData.totalHours}h</span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Horas Semanais do Aluno</Label>
-                <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded-md border border-blue-200">
+                <Label className="text-gray-700 dark:text-gray-300">Horas Semanais do Aluno</Label>
+                <div className="flex items-center space-x-2 p-2 bg-blue-50 dark:bg-blue-900/30 rounded-md border border-blue-200 dark:border-blue-700">
                   <Clock className="h-4 w-4 text-blue-600" />
-                  <span className="font-semibold text-blue-900">{weeklyHours}h/semana</span>
+                  <span className="font-semibold text-blue-900 dark:text-blue-100">{weeklyHours}h/semana</span>
                 </div>
               </div>
 
               {calculatedEndDate && weeklyHours > 0 && (
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Data Prevista de Conclusão</Label>
-                  <div className="flex items-center space-x-2 p-3 bg-green-50 rounded-md border border-green-200">
+                  <Label className="text-gray-700 dark:text-gray-300">Data Prevista de Conclusão</Label>
+                  <div className="flex items-center space-x-2 p-3 bg-green-50 dark:bg-green-900/30 rounded-md border border-green-200 dark:border-green-700">
                     <Calendar className="h-5 w-5 text-green-600" />
                     <div>
-                      <span className="font-semibold text-green-900">
+                      <span className="font-semibold text-green-900 dark:text-green-100">
                         {new Date(calculatedEndDate).toLocaleDateString('pt-BR')}
                       </span>
-                      <p className="text-sm text-green-700 mt-1">
+                      <p className="text-sm text-green-700 dark:text-green-300 mt-1">
                         Baseado em {Math.ceil(selectedCourseData.totalHours / weeklyHours)} semanas de curso
                       </p>
                     </div>
@@ -237,16 +240,16 @@ const CourseSelector = ({
         </div>
 
         {weeklyHours === 0 && (
-          <div className="p-3 bg-amber-50 rounded-md border border-amber-200">
-            <p className="text-sm text-amber-800">
+          <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-md border border-amber-200 dark:border-amber-700">
+            <p className="text-sm text-amber-800 dark:text-amber-200">
               ⚠️ Defina os horários de aula do aluno para calcular a data de conclusão do curso.
             </p>
           </div>
         )}
 
         {(isManualCourse && (!manualCourseData.name || !manualCourseData.totalHours)) && (
-          <div className="p-3 bg-amber-50 rounded-md border border-amber-200">
-            <p className="text-sm text-amber-800">
+          <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-md border border-amber-200 dark:border-amber-700">
+            <p className="text-sm text-amber-800 dark:text-amber-200">
               ⚠️ Preencha o nome e a carga horária do curso para calcular a data de conclusão.
             </p>
           </div>
