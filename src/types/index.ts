@@ -13,6 +13,8 @@ export interface Student {
   email?: string;
   address?: string;
   schedule: StudentSchedule; // Horário específico do aluno
+  isCompleted?: boolean; // Se o curso foi finalizado
+  completionDate?: string; // Data de finalização do curso
 }
 
 export interface StudentSchedule {

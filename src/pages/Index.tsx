@@ -10,14 +10,20 @@ import EditStudent from '../components/EditStudent';
 import TimeSlotView from '../components/TimeSlotView';
 import Reports from '../components/Reports';
 import AddStudent from '../components/AddStudent';
-import { GraduationCap, Users, Calendar, BarChart3, UserPlus } from 'lucide-react';
+import CompletedStudents from '../components/CompletedStudents';
+import { GraduationCap, Users, Calendar, BarChart3, UserPlus, Award } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'reports' | 'add';
+type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'reports' | 'add' | 'completed';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('list');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [students, setStudents] = useState<Student[]>(mockStudents);
+  const { toast } = useToast();
+
+  // Filtrar apenas alunos ativos (não finalizados) para as operações normais
+  const activeStudents = students.filter(student => !student.isCompleted);
 
   const handleSelectStudent = (student: Student) => {
     setSelectedStudent(student);
@@ -37,6 +43,22 @@ const Index = () => {
   const handleSaveStudent = (updatedStudent: Student) => {
     setStudents(prev => prev.map(s => s.id === updatedStudent.id ? updatedStudent : s));
     setCurrentView('details');
+  };
+
+  const handleCompleteStudent = (student: Student) => {
+    const completedStudent: Student = {
+      ...student,
+      isCompleted: true,
+      completionDate: new Date().toISOString()
+    };
+    
+    setStudents(prev => prev.map(s => s.id === student.id ? completedStudent : s));
+    setCurrentView('list');
+    
+    toast({
+      title: "Curso Finalizado!",
+      description: `${student.fullName} foi movido para a lista de alunos formados.`,
+    });
   };
 
   const handleAddStudent = (newStudent: Student) => {
@@ -60,6 +82,10 @@ const Index = () => {
     setCurrentView('add');
   };
 
+  const handleShowCompleted = () => {
+    setCurrentView('completed');
+  };
+
   const handleBack = () => {
     setCurrentView('list');
     setSelectedStudent(null);
@@ -73,6 +99,7 @@ const Index = () => {
     if (view === 'list') return currentView === 'list' || currentView === 'details' || currentView === 'edit' || currentView === 'frequency' || currentView === 'add';
     if (view === 'attendance') return currentView === 'attendance' || currentView === 'timeSlots';
     if (view === 'reports') return currentView === 'reports';
+    if (view === 'completed') return currentView === 'completed';
     return false;
   };
 
@@ -127,6 +154,17 @@ const Index = () => {
                 <span>Relatórios</span>
               </button>
               <button
+                onClick={handleShowCompleted}
+                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                  isNavActive('completed') 
+                    ? 'bg-green-100 text-green-700 font-medium' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Award className="h-4 w-4" />
+                <span>Alunos Formados</span>
+              </button>
+              <button
                 onClick={handleShowAddStudent}
                 className="flex items-center space-x-2 text-sm px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
               >
@@ -142,7 +180,7 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {currentView === 'list' && (
           <StudentList 
-            students={students}
+            students={activeStudents}
             onSelectStudent={handleSelectStudent}
             onShowAttendance={handleShowAttendance}
             onShowDetails={handleShowDetails}
@@ -163,15 +201,23 @@ const Index = () => {
         
         {currentView === 'timeSlots' && (
           <TimeSlotView 
-            students={students}
+            students={activeStudents}
             onBack={handleBack} 
           />
         )}
         
         {currentView === 'reports' && (
           <Reports 
-            students={students}
+            students={activeStudents}
             onBack={handleBack} 
+          />
+        )}
+
+        {currentView === 'completed' && (
+          <CompletedStudents
+            students={students}
+            onBack={handleBack}
+            onShowDetails={handleShowDetails}
           />
         )}
         
@@ -187,6 +233,7 @@ const Index = () => {
             student={selectedStudent}
             onBack={handleBack}
             onEdit={handleEditStudent}
+            onCompleteStudent={handleCompleteStudent}
           />
         )}
         
