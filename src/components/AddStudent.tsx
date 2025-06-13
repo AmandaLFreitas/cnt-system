@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Save, UserPlus, User, Home } from 'lucide-react';
+import { ArrowLeft, Save, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ScheduleSelector from './ScheduleSelector';
+import CourseSelector from './CourseSelector';
 
 interface AddStudentProps {
   onBack: () => void;
@@ -27,6 +28,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
     birthDate: '',
     course: '',
     courseStartDate: '',
+    courseEndDate: '',
     email: '',
     address: '',
     schedule: {} as StudentSchedule
@@ -66,20 +68,10 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
 
   const handleSave = () => {
     // Validação básica
-    if (!formData.fullName || !formData.phone || !formData.birthDate || !formData.course) {
+    if (!formData.fullName || !formData.phone || !formData.birthDate || !formData.course || !formData.courseStartDate) {
       toast({
         title: "Campos obrigatórios",
-        description: "Por favor, preencha todos os campos obrigatórios.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const isMinor = calculateAge(formData.birthDate) < 18;
-    if (isMinor && (!formData.guardian || !formData.fatherName || !formData.motherName)) {
-      toast({
-        title: "Dados do responsável obrigatórios",
-        description: "Para menores de 18 anos, é obrigatório informar o responsável e nome dos pais.",
+        description: "Por favor, preencha todos os campos obrigatórios: nome, telefone, data de nascimento, curso e data de início.",
         variant: "destructive"
       });
       return;
@@ -100,7 +92,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
       phone: formData.phone,
       birthDate: formData.birthDate,
       course: formData.course,
-      courseStartDate: formData.courseStartDate || new Date().toISOString().split('T')[0],
+      courseStartDate: formData.courseStartDate,
       schedule: formData.schedule,
       ...(formData.cpf && { cpf: formData.cpf }),
       ...(formData.email && { email: formData.email }),
@@ -205,7 +197,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
             {isMinor && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="guardian">Responsável *</Label>
+                  <Label htmlFor="guardian">Responsável</Label>
                   <Input
                     id="guardian"
                     value={formData.guardian}
@@ -215,7 +207,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="fatherName">Nome do Pai *</Label>
+                  <Label htmlFor="fatherName">Nome do Pai</Label>
                   <Input
                     id="fatherName"
                     value={formData.fatherName}
@@ -225,7 +217,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="motherName">Nome da Mãe *</Label>
+                  <Label htmlFor="motherName">Nome da Mãe</Label>
                   <Input
                     id="motherName"
                     value={formData.motherName}
@@ -239,34 +231,14 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Informações do Curso</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="course">Curso *</Label>
-              <Input
-                id="course"
-                value={formData.course}
-                onChange={(e) => handleInputChange('course', e.target.value)}
-                placeholder="Nome do curso"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="courseStartDate">Data de Início do Curso</Label>
-              <Input
-                id="courseStartDate"
-                type="date"
-                value={formData.courseStartDate}
-                onChange={(e) => handleInputChange('courseStartDate', e.target.value)}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <CourseSelector
+        selectedCourse={formData.course}
+        courseStartDate={formData.courseStartDate}
+        onCourseChange={(course) => handleInputChange('course', course)}
+        onStartDateChange={(date) => handleInputChange('courseStartDate', date)}
+        onEndDateChange={(date) => handleInputChange('courseEndDate', date)}
+        schedule={formData.schedule}
+      />
 
       <ScheduleSelector
         schedule={formData.schedule}

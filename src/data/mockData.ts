@@ -1,164 +1,136 @@
-import { Student, AttendanceRecord, Course, ClassSchedule } from '../types';
 
-export const mockSchedules: ClassSchedule[] = [
+import { Student, Course, AttendanceRecord } from '../types';
+
+export const mockCourses: Course[] = [
   {
     id: '1',
-    name: 'Manhã (Seg-Qui)',
-    days: ['monday', 'tuesday', 'wednesday', 'thursday'],
-    times: ['08:00-09:00', '09:00-10:00', '10:00-11:00'],
-    hoursPerClass: 1
+    name: 'Informática Básica',
+    totalHours: 80,
+    startDate: '2024-01-15',
+    endDate: '2024-04-15'
   },
   {
-    id: '2',
-    name: 'Tarde (Seg-Qui)',
-    days: ['monday', 'tuesday', 'wednesday', 'thursday'],
-    times: ['13:30-14:30', '14:30-15:30', '15:30-16:30', '16:30-17:30'],
-    hoursPerClass: 1
+    id: '2', 
+    name: 'Excel Avançado',
+    totalHours: 60,
+    startDate: '2024-02-01',
+    endDate: '2024-05-01'
   },
   {
     id: '3',
-    name: 'Sábado Manhã',
-    days: ['saturday'],
-    times: ['08:00-10:00', '10:00-12:00'],
-    hoursPerClass: 2
+    name: 'Word e PowerPoint',
+    totalHours: 40,
+    startDate: '2024-03-01',
+    endDate: '2024-06-01'
   },
   {
     id: '4',
-    name: 'Horário Personalizado',
-    days: [],
-    times: [],
-    hoursPerClass: 0
+    name: 'Programação Web',
+    totalHours: 120,
+    startDate: '2024-01-10',
+    endDate: '2024-07-10'
+  },
+  {
+    id: '5',
+    name: 'Design Gráfico',
+    totalHours: 100,
+    startDate: '2024-02-15',
+    endDate: '2024-08-15'
   }
 ];
 
 export const mockStudents: Student[] = [
   {
     id: '1',
-    fullName: 'Ana Clara Silva Santos',
-    guardian: 'Maria Silva Santos',
-    phone: '(11) 99999-1234',
-    birthDate: '2005-03-15',
-    course: 'Desenvolvimento Web Full Stack',
+    fullName: 'João Silva Santos',
+    phone: '(11) 99999-9999',
+    birthDate: '1995-03-15',
+    course: 'Informática Básica',
     courseStartDate: '2024-01-15',
-    email: 'ana.clara@email.com',
-    scheduleId: '1'
+    schedule: {
+      monday: ['mon-08-09', 'mon-09-10'],
+      wednesday: ['wed-14-15', 'wed-15-16']
+    }
   },
   {
     id: '2',
-    fullName: 'João Pedro Oliveira Costa',
-    phone: '(11) 98888-5678',
-    birthDate: '1998-07-22',
-    course: 'Design Gráfico e UX/UI',
+    fullName: 'Maria Oliveira Costa',
+    phone: '(11) 98888-8888',
+    birthDate: '1988-07-22',
+    course: 'Excel Avançado',
     courseStartDate: '2024-02-01',
-    email: 'joao.pedro@email.com',
-    scheduleId: '2'
+    schedule: {
+      tuesday: ['tue-13-14', 'tue-14-15'],
+      thursday: ['thu-15-16', 'thu-16-17']
+    }
   },
   {
     id: '3',
-    fullName: 'Maria Eduarda Ferreira Lima',
-    guardian: 'José Ferreira Lima',
-    phone: '(11) 97777-9012',
-    birthDate: '2006-11-08',
-    course: 'Marketing Digital',
-    courseStartDate: '2024-01-20',
-    email: 'maria.eduarda@email.com',
-    scheduleId: '4',
-    customSchedule: {
-      days: ['tuesday', 'thursday'],
-      hoursPerDay: {
-        tuesday: 2,
-        thursday: 3
-      }
+    fullName: 'Pedro Mendes Lima',
+    phone: '(11) 97777-7777',
+    birthDate: '2010-12-10',
+    guardian: 'Carlos Mendes',
+    fatherName: 'Carlos Mendes Lima',
+    motherName: 'Ana Paula Mendes',
+    course: 'Word e PowerPoint',
+    courseStartDate: '2024-03-01',
+    schedule: {
+      monday: ['mon-13-14'],
+      wednesday: ['wed-13-14'],
+      friday: []
     }
   },
   {
     id: '4',
-    fullName: 'Carlos Eduardo Pereira Souza',
-    phone: '(11) 96666-3456',
-    birthDate: '1996-05-30',
-    course: 'Desenvolvimento Web Full Stack',
-    courseStartDate: '2024-01-15',
-    email: 'carlos.eduardo@email.com',
-    scheduleId: '4',
-    customSchedule: {
-      days: ['monday', 'wednesday', 'friday'],
-      hoursPerDay: {
-        monday: 1,
-        wednesday: 2,
-        friday: 1
-      }
+    fullName: 'Ana Carolina Souza',
+    phone: '(11) 96666-6666',
+    birthDate: '1992-05-08',
+    course: 'Programação Web',
+    courseStartDate: '2024-01-10',
+    email: 'ana.souza@email.com',
+    address: 'Rua das Flores, 123 - Centro',
+    schedule: {
+      tuesday: ['tue-08-09', 'tue-09-10'],
+      thursday: ['thu-08-09', 'thu-09-10'],
+      saturday: ['sat-08-10']
     }
   },
   {
     id: '5',
-    fullName: 'Beatriz Almeida Rodrigues',
-    guardian: 'Ana Almeida Rodrigues',
-    phone: '(11) 95555-7890',
-    birthDate: '2007-09-12',
-    course: 'Design Gráfico e UX/UI',
-    courseStartDate: '2024-02-01',
-    email: 'beatriz.almeida@email.com',
-    scheduleId: '4',
-    customSchedule: {
-      days: ['saturday'],
-      hoursPerDay: {
-        saturday: 4
-      }
+    fullName: 'Roberto da Silva',
+    phone: '(11) 95555-5555',
+    birthDate: '1985-11-30',
+    course: 'Design Gráfico',
+    courseStartDate: '2024-02-15',
+    cpf: '123.456.789-10',
+    schedule: {
+      monday: ['mon-15-16', 'mon-16-17'],
+      wednesday: ['wed-15-16', 'wed-16-17'],
+      saturday: ['sat-10-12']
     }
   }
 ];
 
-export const mockCourses: Course[] = [
+export const mockAttendance: AttendanceRecord[] = [
   {
     id: '1',
-    name: 'Desenvolvimento Web Full Stack',
-    totalHours: 320,
-    startDate: '2024-01-15',
-    endDate: '2024-08-15'
+    studentId: '1',
+    date: '2024-01-15',
+    status: 'present',
+    classHours: 2
   },
   {
     id: '2',
-    name: 'Design Gráfico e UX/UI',
-    totalHours: 280,
-    startDate: '2024-02-01',
-    endDate: '2024-07-30'
+    studentId: '1',
+    date: '2024-01-17',
+    status: 'absent',
+    classHours: 2
   },
   {
     id: '3',
-    name: 'Marketing Digital',
-    totalHours: 240,
-    startDate: '2024-01-20',
-    endDate: '2024-07-20'
+    studentId: '2',
+    date: '2024-02-01',
+    status: 'present',
+    classHours: 2
   }
-];
-
-export const mockAttendanceRecords: AttendanceRecord[] = [
-  // Ana Clara
-  { id: '1', studentId: '1', date: '2024-06-01', status: 'present', classHours: 4 },
-  { id: '2', studentId: '1', date: '2024-06-03', status: 'present', classHours: 4 },
-  { id: '3', studentId: '1', date: '2024-06-05', status: 'absent', classHours: 0 },
-  { id: '4', studentId: '1', date: '2024-06-08', status: 'present', classHours: 4 },
-  { id: '5', studentId: '1', date: '2024-06-10', status: 'present', classHours: 4 },
-  
-  // João Pedro
-  { id: '6', studentId: '2', date: '2024-06-01', status: 'present', classHours: 3 },
-  { id: '7', studentId: '2', date: '2024-06-03', status: 'present', classHours: 3 },
-  { id: '8', studentId: '2', date: '2024-06-05', status: 'present', classHours: 3 },
-  { id: '9', studentId: '2', date: '2024-06-08', status: 'absent', classHours: 0 },
-  
-  // Maria Eduarda
-  { id: '10', studentId: '3', date: '2024-06-01', status: 'present', classHours: 4 },
-  { id: '11', studentId: '3', date: '2024-06-03', status: 'present', classHours: 4 },
-  { id: '12', studentId: '3', date: '2024-06-05', status: 'present', classHours: 4 },
-  { id: '13', studentId: '3', date: '2024-06-08', status: 'present', classHours: 4 },
-  
-  // Carlos Eduardo
-  { id: '14', studentId: '4', date: '2024-06-01', status: 'absent', classHours: 0 },
-  { id: '15', studentId: '4', date: '2024-06-03', status: 'present', classHours: 4 },
-  { id: '16', studentId: '4', date: '2024-06-05', status: 'present', classHours: 4 },
-  
-  // Beatriz
-  { id: '17', studentId: '5', date: '2024-06-01', status: 'present', classHours: 3 },
-  { id: '18', studentId: '5', date: '2024-06-03', status: 'present', classHours: 3 },
-  { id: '19', studentId: '5', date: '2024-06-05', status: 'absent', classHours: 0 }
 ];
