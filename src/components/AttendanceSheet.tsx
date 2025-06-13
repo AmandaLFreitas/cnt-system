@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Student, AttendanceRecord, WeekDay, AVAILABLE_TIMES } from '../types';
 import { mockStudents, mockAttendance } from '../data/mockData';
@@ -5,14 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Check, X, User, Save, Clock } from 'lucide-react';
+import { ArrowLeft, Check, X, User, Save, Clock, Users, Calendar, Monitor } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface AttendanceSheetProps {
   onBack: () => void;
+  onShowScheduleView: () => void;
 }
 
-const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
+const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) => {
   const [students] = useState<Student[]>(mockStudents);
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(mockAttendance);
   
@@ -22,6 +24,7 @@ const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
   const { toast } = useToast();
 
   const today = new Date().toISOString().split('T')[0];
+  const TOTAL_COMPUTERS = 14; // Total de vagas disponíveis
 
   const getDayName = (day: WeekDay) => {
     const dayNames = {
@@ -33,6 +36,10 @@ const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
       'saturday': 'Sábado'
     };
     return dayNames[day];
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
   const availableTimeSlots = AVAILABLE_TIMES[selectedDay] || [];
@@ -92,6 +99,8 @@ const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
   };
 
   const { present, absent, total } = getTodayAttendanceCount();
+  const enrolledStudents = filteredStudents.length;
+  const availableSlots = TOTAL_COMPUTERS - enrolledStudents;
 
   return (
     <div className="space-y-6">
@@ -107,15 +116,26 @@ const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
           </div>
         </div>
         
-        {total > 0 && selectedTimeSlot && (
+        <div className="flex space-x-3">
           <Button 
-            onClick={saveAttendance}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+            onClick={onShowScheduleView}
+            variant="outline"
+            className="border-blue-200 text-blue-700 hover:bg-blue-50"
           >
-            <Save className="mr-2 h-4 w-4" />
-            Salvar Chamada
+            <Calendar className="mr-2 h-4 w-4" />
+            Ver Grade Horária
           </Button>
-        )}
+          
+          {total > 0 && selectedTimeSlot && (
+            <Button 
+              onClick={saveAttendance}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+            >
+              <Save className="mr-2 h-4 w-4" />
+              Salvar Chamada
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Seleção de Dia e Horário */}
@@ -172,8 +192,48 @@ const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
         </CardContent>
       </Card>
 
-      {total > 0 && (
+      {/* Informações de Vagas */}
+      {selectedTimeSlot && (
         <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Monitor className="h-5 w-5 text-blue-600" />
+                  <span className="text-sm font-medium text-gray-600">Total de Vagas</span>
+                </div>
+                <div className="text-2xl font-bold text-blue-600">{TOTAL_COMPUTERS}</div>
+              </div>
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Users className="h-5 w-5 text-green-600" />
+                  <span className="text-sm font-medium text-gray-600">Alunos Inscritos</span>
+                </div>
+                <div className="text-2xl font-bold text-green-600">{enrolledStudents}</div>
+              </div>
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Monitor className="h-5 w-5 text-orange-600" />
+                  <span className="text-sm font-medium text-gray-600">Vagas Disponíveis</span>
+                </div>
+                <div className="text-2xl font-bold text-orange-600">{availableSlots}</div>
+              </div>
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Clock className="h-5 w-5 text-purple-600" />
+                  <span className="text-sm font-medium text-gray-600">Ocupação</span>
+                </div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {TOTAL_COMPUTERS > 0 ? Math.round((enrolledStudents / TOTAL_COMPUTERS) * 100) : 0}%
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {total > 0 && (
+        <Card className="bg-green-50 border-green-200">
           <CardContent className="pt-6">
             <div className="flex items-center justify-center space-x-8 text-center">
               <div>
@@ -207,11 +267,16 @@ const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
                         <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
                           <User className="h-6 w-6 text-blue-600" />
                         </div>
-                        <div>
+                        <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900">{student.fullName}</h3>
-                          <Badge variant="secondary" className="mt-1 bg-gray-100 text-gray-700">
-                            {student.course}
-                          </Badge>
+                          <div className="flex items-center space-x-4 mt-1">
+                            <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                              {student.course}
+                            </Badge>
+                            <div className="text-sm text-gray-600">
+                              <span className="font-medium">Início:</span> {formatDate(student.courseStartDate)}
+                            </div>
+                          </div>
                         </div>
                       </div>
 

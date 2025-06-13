@@ -8,13 +8,14 @@ import StudentFrequency from '../components/StudentFrequency';
 import StudentDetails from '../components/StudentDetails';
 import EditStudent from '../components/EditStudent';
 import TimeSlotView from '../components/TimeSlotView';
+import ScheduleView from '../components/ScheduleView';
 import Reports from '../components/Reports';
 import AddStudent from '../components/AddStudent';
 import CompletedStudents from '../components/CompletedStudents';
 import { GraduationCap, Users, Calendar, BarChart3, UserPlus, Award } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'reports' | 'add' | 'completed';
+type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'scheduleView' | 'reports' | 'add' | 'completed';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('list');
@@ -74,6 +75,10 @@ const Index = () => {
     setCurrentView('timeSlots');
   };
 
+  const handleShowScheduleView = () => {
+    setCurrentView('scheduleView');
+  };
+
   const handleShowReports = () => {
     setCurrentView('reports');
   };
@@ -97,7 +102,7 @@ const Index = () => {
 
   const isNavActive = (view: View) => {
     if (view === 'list') return currentView === 'list' || currentView === 'details' || currentView === 'edit' || currentView === 'frequency' || currentView === 'add';
-    if (view === 'attendance') return currentView === 'attendance' || currentView === 'timeSlots';
+    if (view === 'attendance') return currentView === 'attendance' || currentView === 'timeSlots' || currentView === 'scheduleView';
     if (view === 'reports') return currentView === 'reports';
     if (view === 'completed') return currentView === 'completed';
     return false;
@@ -196,13 +201,24 @@ const Index = () => {
         )}
         
         {currentView === 'attendance' && (
-          <AttendanceSheet onBack={handleBack} />
+          <AttendanceSheet 
+            onBack={handleBack}
+            onShowScheduleView={handleShowScheduleView}
+          />
         )}
         
         {currentView === 'timeSlots' && (
           <TimeSlotView 
             students={activeStudents}
-            onBack={handleBack} 
+            onBack={handleBack}
+            onShowScheduleView={handleShowScheduleView}
+          />
+        )}
+
+        {currentView === 'scheduleView' && (
+          <ScheduleView 
+            students={students}
+            onBack={handleBack}
           />
         )}
         

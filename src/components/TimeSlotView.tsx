@@ -6,16 +6,19 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Clock, Users, ArrowLeft, User } from 'lucide-react';
+import { Clock, Users, ArrowLeft, User, Monitor, Calendar } from 'lucide-react';
 
 interface TimeSlotViewProps {
   students: Student[];
   onBack: () => void;
+  onShowScheduleView: () => void;
 }
 
-const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
+const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProps) => {
   const [selectedDay, setSelectedDay] = useState<WeekDay>('monday');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
+  
+  const TOTAL_COMPUTERS = 14;
 
   const getDayName = (day: WeekDay) => {
     const dayNames = {
@@ -27,6 +30,10 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
       'saturday': 'Sábado'
     };
     return dayNames[day];
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
   const availableDays = Object.keys(AVAILABLE_TIMES).filter(
@@ -49,17 +56,30 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
     });
   }, [students, selectedDay]);
 
+  const enrolledCount = studentsInTimeSlot.length;
+  const availableSlots = TOTAL_COMPUTERS - enrolledCount;
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <Button variant="outline" onClick={onBack} className="px-3">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar
-        </Button>
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900">Visualização por Horário</h2>
-          <p className="text-gray-600 mt-1">Selecione o dia e horário para ver os alunos</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Button variant="outline" onClick={onBack} className="px-3">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar
+          </Button>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">Visualização por Horário</h2>
+            <p className="text-gray-600 mt-1">Selecione o dia e horário para ver os alunos</p>
+          </div>
         </div>
+        
+        <Button 
+          onClick={onShowScheduleView}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          <Calendar className="mr-2 h-4 w-4" />
+          Ver Grade Completa
+        </Button>
       </div>
 
       <Card>
@@ -73,7 +93,10 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm font-medium">Dia da Semana</label>
-              <Select value={selectedDay} onValueChange={(value: string) => setSelectedDay(value as WeekDay)}>
+              <Select value={selectedDay} onValueChange={(value: string) => {
+                setSelectedDay(value as WeekDay);
+                setSelectedTimeSlot('');
+              }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -96,7 +119,7 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
                 <SelectContent>
                   {AVAILABLE_TIMES[selectedDay].map(timeSlot => (
                     <SelectItem key={timeSlot.id} value={timeSlot.id}>
-                      {timeSlot.time}
+                      {timeSlot.time} ({timeSlot.hours}h)
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -105,6 +128,46 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Informações de Vagas */}
+      {selectedTimeSlot && (
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Monitor className="h-5 w-5 text-blue-600" />
+                  <span className="text-sm font-medium text-gray-600">Total de Vagas</span>
+                </div>
+                <div className="text-2xl font-bold text-blue-600">{TOTAL_COMPUTERS}</div>
+              </div>
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Users className="h-5 w-5 text-green-600" />
+                  <span className="text-sm font-medium text-gray-600">Alunos Inscritos</span>
+                </div>
+                <div className="text-2xl font-bold text-green-600">{enrolledCount}</div>
+              </div>
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Monitor className="h-5 w-5 text-orange-600" />
+                  <span className="text-sm font-medium text-gray-600">Vagas Disponíveis</span>
+                </div>
+                <div className="text-2xl font-bold text-orange-600">{availableSlots}</div>
+              </div>
+              <div>
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <Clock className="h-5 w-5 text-purple-600" />
+                  <span className="text-sm font-medium text-gray-600">Ocupação</span>
+                </div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {TOTAL_COMPUTERS > 0 ? Math.round((enrolledCount / TOTAL_COMPUTERS) * 100) : 0}%
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {selectedTimeSlot && (
         <Card>
@@ -122,6 +185,7 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
                     <TableHead>Aluno</TableHead>
                     <TableHead>Curso</TableHead>
                     <TableHead>Telefone</TableHead>
+                    <TableHead>Data de Início</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -137,6 +201,12 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
                         <Badge variant="outline">{student.course}</Badge>
                       </TableCell>
                       <TableCell>{student.phone}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="h-4 w-4 text-gray-500" />
+                          <span>{formatDate(student.courseStartDate)}</span>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
