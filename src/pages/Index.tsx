@@ -57,7 +57,7 @@ const Index = () => {
     
     toast({
       title: "Curso Finalizado!",
-      description: `${student.fullName} foi movido para a lista de alunos formados.`,
+      description: `${student.fullName} foi movido para a lista de alunos finalizados.`,
     });
   };
 
@@ -162,7 +162,7 @@ const Index = () => {
                 }`}
               >
                 <Award className="h-4 w-4" />
-                <span>Alunos Formados</span>
+                <span>Alunos Finalizados</span>
               </button>
               <button
                 onClick={handleShowAddStudent}

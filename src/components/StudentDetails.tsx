@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Student, WeekDay, AVAILABLE_TIMES, AttendanceRecord } from '../types';
 import { mockCourses, mockAttendance } from '../data/mockData';
@@ -150,7 +151,7 @@ const StudentDetails = ({ student, onBack, onEdit, onCompleteStudent }: StudentD
         </div>
         
         <div className="flex space-x-3">
-          {!student.isCompleted && courseProgressPercentage >= 100 && (
+          {!student.isCompleted && (
             <Button 
               onClick={handleCompleteStudent}
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"

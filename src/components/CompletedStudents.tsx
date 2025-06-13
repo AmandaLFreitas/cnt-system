@@ -49,7 +49,7 @@ const CompletedStudents = ({ students, onBack, onShowDetails }: CompletedStudent
           Voltar
         </Button>
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Alunos Formados</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Alunos Finalizados</h2>
           <p className="text-gray-600 mt-1">Estudantes que concluíram seus cursos</p>
         </div>
       </div>
@@ -59,9 +59,9 @@ const CompletedStudents = ({ students, onBack, onShowDetails }: CompletedStudent
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <GraduationCap className="h-5 w-5" />
-              <span>Lista de Formados</span>
+              <span>Lista de Finalizados</span>
               <Badge className="bg-green-100 text-green-800">
-                {completedStudents.length} {completedStudents.length === 1 ? 'Formado' : 'Formados'}
+                {completedStudents.length} {completedStudents.length === 1 ? 'Finalizado' : 'Finalizados'}
               </Badge>
             </div>
           </CardTitle>
@@ -144,12 +144,12 @@ const CompletedStudents = ({ students, onBack, onShowDetails }: CompletedStudent
                 {searchTerm ? (
                   <div>
                     <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-500">Nenhum aluno formado encontrado com "{searchTerm}"</p>
+                    <p className="text-gray-500">Nenhum aluno finalizado encontrado com "{searchTerm}"</p>
                   </div>
                 ) : (
                   <div>
                     <GraduationCap className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-500">Ainda não há alunos formados</p>
+                    <p className="text-gray-500">Ainda não há alunos finalizados</p>
                     <p className="text-sm text-gray-400 mt-1">
                       Os alunos aparecerão aqui quando finalizarem seus cursos
                     </p>
