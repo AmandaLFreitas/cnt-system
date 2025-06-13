@@ -37,14 +37,14 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
     if (!selectedTimeSlot) return [];
     
     return students.filter(student => {
-      const daySchedule = student.schedule[selectedDay];
+      const daySchedule = student.schedule?.[selectedDay];
       return daySchedule && daySchedule.includes(selectedTimeSlot);
     });
   }, [students, selectedDay, selectedTimeSlot]);
 
   const allStudentsInDay = useMemo(() => {
     return students.filter(student => {
-      const daySchedule = student.schedule[selectedDay];
+      const daySchedule = student.schedule?.[selectedDay];
       return daySchedule && daySchedule.length > 0;
     });
   }, [students, selectedDay]);
@@ -73,7 +73,7 @@ const TimeSlotView = ({ students, onBack }: TimeSlotViewProps) => {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm font-medium">Dia da Semana</label>
-              <Select value={selectedDay} onValueChange={setSelectedDay}>
+              <Select value={selectedDay} onValueChange={(value: string) => setSelectedDay(value as WeekDay)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

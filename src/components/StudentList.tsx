@@ -59,6 +59,14 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
     let totalHours = 0;
     const days: string[] = [];
     
+    // Verificar se student.schedule existe e é um objeto válido
+    if (!student.schedule || typeof student.schedule !== 'object') {
+      return {
+        days: 'Não definido',
+        weeklyHours: 0
+      };
+    }
+    
     Object.entries(student.schedule).forEach(([day, timeIds]) => {
       if (timeIds && timeIds.length > 0) {
         days.push(getDayName(day as WeekDay));
@@ -72,7 +80,7 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
     });
     
     return {
-      days: days.join(', '),
+      days: days.join(', ') || 'Não definido',
       weeklyHours: totalHours
     };
   };
@@ -209,7 +217,7 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
                     <div className="flex items-center space-x-2 text-sm">
                       <Clock className="h-4 w-4 text-gray-600" />
                       <span className="text-gray-600">Dias:</span>
-                      <span className="font-medium">{scheduleInfo.days || 'Não definido'}</span>
+                      <span className="font-medium">{scheduleInfo.days}</span>
                     </div>
                     
                     <div className="flex items-center space-x-2 text-sm">
