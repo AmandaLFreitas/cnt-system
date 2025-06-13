@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BookOpen, Calendar, Clock } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { BookOpen, Calendar, Clock, Plus } from 'lucide-react';
 
 interface CourseSelectorProps {
   selectedCourse: string;
@@ -28,6 +29,11 @@ const CourseSelector = ({
   const [courses] = useState<Course[]>(mockCourses);
   const [calculatedEndDate, setCalculatedEndDate] = useState('');
   const [weeklyHours, setWeeklyHours] = useState(0);
+  const [isManualCourse, setIsManualCourse] = useState(false);
+  const [manualCourseData, setManualCourseData] = useState({
+    name: '',
+    totalHours: ''
+  });
 
   // Calcular horas semanais baseado no cronograma
   useEffect(() => {
@@ -47,15 +53,23 @@ const CourseSelector = ({
 
   // Calcular data de conclusão
   useEffect(() => {
-    if (selectedCourse && courseStartDate && weeklyHours > 0) {
-      const course = courses.find(c => c.name === selectedCourse);
-      if (course) {
-        const endDate = calculateCourseEndDate(courseStartDate, course.totalHours, weeklyHours);
+    if (courseStartDate && weeklyHours > 0) {
+      let courseHours = 0;
+      
+      if (isManualCourse) {
+        courseHours = parseInt(manualCourseData.totalHours) || 0;
+      } else if (selectedCourse) {
+        const course = courses.find(c => c.name === selectedCourse);
+        courseHours = course?.totalHours || 0;
+      }
+      
+      if (courseHours > 0) {
+        const endDate = calculateCourseEndDate(courseStartDate, courseHours, weeklyHours);
         setCalculatedEndDate(endDate);
         onEndDateChange(endDate);
       }
     }
-  }, [selectedCourse, courseStartDate, weeklyHours, courses, onEndDateChange]);
+  }, [selectedCourse, courseStartDate, weeklyHours, courses, onEndDateChange, isManualCourse, manualCourseData.totalHours]);
 
   const calculateCourseEndDate = (startDate: string, totalHours: number, hoursPerWeek: number): string => {
     if (!startDate || totalHours <= 0 || hoursPerWeek <= 0) return '';
@@ -80,7 +94,30 @@ const CourseSelector = ({
     return currentDate.toISOString().split('T')[0];
   };
 
-  const selectedCourseData = courses.find(c => c.name === selectedCourse);
+  const handleManualCourseChange = (field: string, value: string) => {
+    setManualCourseData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    if (field === 'name') {
+      onCourseChange(value);
+    }
+  };
+
+  const handleCourseTypeChange = (manual: boolean) => {
+    setIsManualCourse(manual);
+    if (manual) {
+      onCourseChange(manualCourseData.name);
+    } else {
+      onCourseChange('');
+      setManualCourseData({ name: '', totalHours: '' });
+    }
+  };
+
+  const selectedCourseData = isManualCourse 
+    ? { name: manualCourseData.name, totalHours: parseInt(manualCourseData.totalHours) || 0 }
+    : courses.find(c => c.name === selectedCourse);
 
   return (
     <Card>
@@ -91,22 +128,65 @@ const CourseSelector = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Toggle para tipo de curso */}
+        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+          <Label htmlFor="course-type" className="text-sm font-medium">
+            Curso pré-cadastrado
+          </Label>
+          <Switch
+            id="course-type"
+            checked={isManualCourse}
+            onCheckedChange={handleCourseTypeChange}
+          />
+          <Label htmlFor="course-type" className="text-sm font-medium">
+            Curso personalizado
+          </Label>
+          <Plus className="h-4 w-4 text-gray-500" />
+        </div>
+
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="course">Curso *</Label>
-            <Select value={selectedCourse} onValueChange={onCourseChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione um curso" />
-              </SelectTrigger>
-              <SelectContent>
-                {courses.map((course) => (
-                  <SelectItem key={course.id} value={course.name}>
-                    {course.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Seleção ou entrada do curso */}
+          {isManualCourse ? (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="manual-course-name">Nome do Curso *</Label>
+                <Input
+                  id="manual-course-name"
+                  value={manualCourseData.name}
+                  onChange={(e) => handleManualCourseChange('name', e.target.value)}
+                  placeholder="Digite o nome do curso"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="manual-course-hours">Carga Horária Total *</Label>
+                <Input
+                  id="manual-course-hours"
+                  type="number"
+                  value={manualCourseData.totalHours}
+                  onChange={(e) => handleManualCourseChange('totalHours', e.target.value)}
+                  placeholder="Ex: 80"
+                  min="1"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="course">Curso *</Label>
+              <Select value={selectedCourse} onValueChange={onCourseChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione um curso" />
+                </SelectTrigger>
+                <SelectContent>
+                  {courses.map((course) => (
+                    <SelectItem key={course.id} value={course.name}>
+                      {course.name} ({course.totalHours}h)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="courseStartDate">Data de Início do Curso *</Label>
@@ -118,7 +198,7 @@ const CourseSelector = ({
             />
           </div>
 
-          {selectedCourseData && (
+          {selectedCourseData && selectedCourseData.totalHours > 0 && (
             <>
               <div className="space-y-2">
                 <Label>Carga Horária Total</Label>
@@ -136,7 +216,7 @@ const CourseSelector = ({
                 </div>
               </div>
 
-              {calculatedEndDate && (
+              {calculatedEndDate && weeklyHours > 0 && (
                 <div className="space-y-2 md:col-span-2">
                   <Label>Data Prevista de Conclusão</Label>
                   <div className="flex items-center space-x-2 p-3 bg-green-50 rounded-md border border-green-200">
@@ -147,7 +227,6 @@ const CourseSelector = ({
                       </span>
                       <p className="text-sm text-green-700 mt-1">
                         Baseado em {Math.ceil(selectedCourseData.totalHours / weeklyHours)} semanas de curso
-                        {weeklyHours === 0 && " (defina os horários para calcular)"}
                       </p>
                     </div>
                   </div>
@@ -161,6 +240,14 @@ const CourseSelector = ({
           <div className="p-3 bg-amber-50 rounded-md border border-amber-200">
             <p className="text-sm text-amber-800">
               ⚠️ Defina os horários de aula do aluno para calcular a data de conclusão do curso.
+            </p>
+          </div>
+        )}
+
+        {(isManualCourse && (!manualCourseData.name || !manualCourseData.totalHours)) && (
+          <div className="p-3 bg-amber-50 rounded-md border border-amber-200">
+            <p className="text-sm text-amber-800">
+              ⚠️ Preencha o nome e a carga horária do curso para calcular a data de conclusão.
             </p>
           </div>
         )}
