@@ -1,7 +1,6 @@
-
 import { useState, useMemo } from 'react';
 import { Student, AttendanceRecord, WeekDay, AVAILABLE_TIMES } from '../types';
-import { mockAttendanceRecords } from '../data/mockData';
+import { mockAttendance } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +15,7 @@ interface ReportsProps {
 }
 
 const Reports = ({ students, onBack }: ReportsProps) => {
-  const [attendanceRecords] = useState<AttendanceRecord[]>(mockAttendanceRecords);
+  const [attendanceRecords] = useState<AttendanceRecord[]>(mockAttendance);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDay, setSelectedDay] = useState<string>('all');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('all');
