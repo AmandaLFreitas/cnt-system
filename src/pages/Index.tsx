@@ -9,9 +9,10 @@ import StudentDetails from '../components/StudentDetails';
 import EditStudent from '../components/EditStudent';
 import ScheduleView from '../components/ScheduleView';
 import Reports from '../components/Reports';
-import { GraduationCap, Users, Calendar, BarChart3 } from 'lucide-react';
+import AddStudent from '../components/AddStudent';
+import { GraduationCap, Users, Calendar, BarChart3, UserPlus } from 'lucide-react';
 
-type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'schedule' | 'reports';
+type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'schedule' | 'reports' | 'add';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('list');
@@ -38,6 +39,11 @@ const Index = () => {
     setCurrentView('details');
   };
 
+  const handleAddStudent = (newStudent: Student) => {
+    setStudents(prev => [...prev, newStudent]);
+    setCurrentView('list');
+  };
+
   const handleShowAttendance = () => {
     setCurrentView('attendance');
   };
@@ -50,6 +56,10 @@ const Index = () => {
     setCurrentView('reports');
   };
 
+  const handleShowAddStudent = () => {
+    setCurrentView('add');
+  };
+
   const handleBack = () => {
     setCurrentView('list');
     setSelectedStudent(null);
@@ -60,7 +70,7 @@ const Index = () => {
   };
 
   const isNavActive = (view: View) => {
-    if (view === 'list') return currentView === 'list' || currentView === 'details' || currentView === 'edit' || currentView === 'frequency';
+    if (view === 'list') return currentView === 'list' || currentView === 'details' || currentView === 'edit' || currentView === 'frequency' || currentView === 'add';
     if (view === 'attendance') return currentView === 'attendance' || currentView === 'schedule';
     if (view === 'reports') return currentView === 'reports';
     return false;
@@ -116,6 +126,13 @@ const Index = () => {
                 <BarChart3 className="h-4 w-4" />
                 <span>Relatórios</span>
               </button>
+              <button
+                onClick={handleShowAddStudent}
+                className="flex items-center space-x-2 text-sm px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span>Adicionar Aluno</span>
+              </button>
             </nav>
           </div>
         </div>
@@ -128,6 +145,13 @@ const Index = () => {
             onSelectStudent={handleSelectStudent}
             onShowAttendance={handleShowAttendance}
             onShowDetails={handleShowDetails}
+          />
+        )}
+        
+        {currentView === 'add' && (
+          <AddStudent 
+            onBack={handleBack}
+            onSave={handleAddStudent}
           />
         )}
         
