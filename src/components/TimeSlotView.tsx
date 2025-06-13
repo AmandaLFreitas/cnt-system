@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { Student, WeekDay, AVAILABLE_TIMES } from '../types';
 import { mockCourses } from '../data/mockData';
@@ -7,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Clock, Users, ArrowLeft, User, Monitor, Calendar, Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Clock, Users, ArrowLeft, User, Monitor, Calendar } from 'lucide-react';
 
 interface TimeSlotViewProps {
   students: Student[];
@@ -20,7 +18,6 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
   const [selectedDay, setSelectedDay] = useState<WeekDay>('monday');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [courses] = useState(mockCourses);
-  const { theme, setTheme } = useTheme();
   
   const TOTAL_COMPUTERS = 14;
 
@@ -69,32 +66,24 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
   const availableSlots = TOTAL_COMPUTERS - enrolledCount;
 
   return (
-    <div className="space-y-4 p-4 md:space-y-6 md:p-6">
+    <div className="space-y-4 p-2 md:space-y-6 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" onClick={onBack} className="px-3">
+          <Button variant="outline" onClick={onBack} className="px-3" size="sm">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Visualização por Horário</h2>
+            <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Visualização por Horário</h2>
             <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm md:text-base">Selecione o dia e horário para ver os alunos</p>
           </div>
         </div>
         
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="px-3"
-          >
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-          
           <Button 
             onClick={onShowScheduleView}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base"
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
           >
             <Calendar className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Ver Grade Completa</span>
@@ -105,8 +94,8 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
-            <Clock className="h-5 w-5" />
+          <CardTitle className="flex items-center space-x-2 text-sm md:text-lg">
+            <Clock className="h-4 w-4 md:h-5 md:w-5" />
             <span>Filtros</span>
           </CardTitle>
         </CardHeader>
@@ -159,28 +148,28 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
                   <Monitor className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
                   <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400">Total de Vagas</span>
                 </div>
-                <div className="text-xl md:text-2xl font-bold text-blue-600">{TOTAL_COMPUTERS}</div>
+                <div className="text-lg md:text-2xl font-bold text-blue-600">{TOTAL_COMPUTERS}</div>
               </div>
               <div>
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <Users className="h-4 w-4 md:h-5 md:w-5 text-green-600" />
                   <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400">Alunos Inscritos</span>
                 </div>
-                <div className="text-xl md:text-2xl font-bold text-green-600">{enrolledCount}</div>
+                <div className="text-lg md:text-2xl font-bold text-green-600">{enrolledCount}</div>
               </div>
               <div>
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <Monitor className="h-4 w-4 md:h-5 md:w-5 text-orange-600" />
                   <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400">Vagas Disponíveis</span>
                 </div>
-                <div className="text-xl md:text-2xl font-bold text-orange-600">{availableSlots}</div>
+                <div className="text-lg md:text-2xl font-bold text-orange-600">{availableSlots}</div>
               </div>
               <div>
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <Clock className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
                   <span className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400">Ocupação</span>
                 </div>
-                <div className="text-xl md:text-2xl font-bold text-purple-600">
+                <div className="text-lg md:text-2xl font-bold text-purple-600">
                   {TOTAL_COMPUTERS > 0 ? Math.round((enrolledCount / TOTAL_COMPUTERS) * 100) : 0}%
                 </div>
               </div>
@@ -192,8 +181,8 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
       {selectedTimeSlot && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
-              <Users className="h-5 w-5" />
+            <CardTitle className="flex items-center space-x-2 text-sm md:text-lg">
+              <Users className="h-4 w-4 md:h-5 md:w-5" />
               <span>Alunos no {getDayName(selectedDay)} - {AVAILABLE_TIMES[selectedDay].find(t => t.id === selectedTimeSlot)?.time}</span>
             </CardTitle>
           </CardHeader>
@@ -203,10 +192,10 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Aluno</TableHead>
-                      <TableHead>Curso</TableHead>
-                      <TableHead>Data de Início</TableHead>
-                      <TableHead>Data de Término</TableHead>
+                      <TableHead className="text-xs md:text-sm">Aluno</TableHead>
+                      <TableHead className="text-xs md:text-sm">Curso</TableHead>
+                      <TableHead className="text-xs md:text-sm">Data de Início</TableHead>
+                      <TableHead className="text-xs md:text-sm">Data de Término</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -216,8 +205,8 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
                         <TableRow key={student.id}>
                           <TableCell className="font-medium">
                             <div className="flex items-center space-x-2">
-                              <User className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                              <span className="truncate">{student.fullName}</span>
+                              <User className="h-3 w-3 md:h-4 md:w-4 text-blue-600 flex-shrink-0" />
+                              <span className="truncate text-xs md:text-sm">{student.fullName}</span>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -225,14 +214,14 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-1">
-                              <Calendar className="h-4 w-4 text-green-600 flex-shrink-0" />
-                              <span className="text-sm">{formatDate(student.courseStartDate)}</span>
+                              <Calendar className="h-3 w-3 md:h-4 md:w-4 text-green-600 flex-shrink-0" />
+                              <span className="text-xs md:text-sm">{formatDate(student.courseStartDate)}</span>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-1">
-                              <Calendar className="h-4 w-4 text-red-600 flex-shrink-0" />
-                              <span className="text-sm">
+                              <Calendar className="h-3 w-3 md:h-4 md:w-4 text-red-600 flex-shrink-0" />
+                              <span className="text-xs md:text-sm">
                                 {courseInfo 
                                   ? formatDate(courseInfo.endDate)
                                   : 'Data não disponível'
@@ -249,7 +238,7 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
             ) : (
               <div className="text-center py-8 text-gray-500">
                 <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>Nenhum aluno encontrado para este horário</p>
+                <p className="text-sm md:text-base">Nenhum aluno encontrado para este horário</p>
               </div>
             )}
           </CardContent>
@@ -259,15 +248,15 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
       {!selectedTimeSlot && allStudentsInDay.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
-              <Users className="h-5 w-5" />
+            <CardTitle className="flex items-center space-x-2 text-sm md:text-lg">
+              <Users className="h-4 w-4 md:h-5 md:w-5" />
               <span>Todos os alunos na {getDayName(selectedDay)}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center py-4 text-gray-600 dark:text-gray-400">
-              <p>{allStudentsInDay.length} aluno{allStudentsInDay.length !== 1 ? 's' : ''} tem aula na {getDayName(selectedDay)}</p>
-              <p className="text-sm mt-1">Selecione um horário específico para ver os detalhes</p>
+              <p className="text-sm md:text-base">{allStudentsInDay.length} aluno{allStudentsInDay.length !== 1 ? 's' : ''} tem aula na {getDayName(selectedDay)}</p>
+              <p className="text-xs md:text-sm mt-1">Selecione um horário específico para ver os detalhes</p>
             </div>
           </CardContent>
         </Card>

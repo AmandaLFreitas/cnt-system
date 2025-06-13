@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Student } from '../types';
 import { mockStudents } from '../data/mockData';
@@ -12,8 +11,10 @@ import ScheduleView from '../components/ScheduleView';
 import Reports from '../components/Reports';
 import AddStudent from '../components/AddStudent';
 import CompletedStudents from '../components/CompletedStudents';
-import { GraduationCap, Users, Calendar, BarChart3, UserPlus, Award } from 'lucide-react';
+import { GraduationCap, Users, Calendar, BarChart3, UserPlus, Award, Moon, Sun } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTheme } from 'next-themes';
+import { Button } from '@/components/ui/button';
 
 type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'scheduleView' | 'reports' | 'add' | 'completed';
 
@@ -22,6 +23,7 @@ const Index = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [students, setStudents] = useState<Student[]>(mockStudents);
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
 
   // Filtrar apenas alunos ativos (não finalizados) para as operações normais
   const activeStudents = students.filter(student => !student.isCompleted);
@@ -109,9 +111,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
@@ -119,70 +121,128 @@ const Index = () => {
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">EduControl</h1>
-                <p className="text-sm text-gray-600">Sistema de Chamada Escolar</p>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">EduControl</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Sistema de Chamada Escolar</p>
               </div>
             </div>
             
-            <nav className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <nav className="hidden md:flex items-center space-x-6">
+                <button
+                  onClick={() => setCurrentView('list')}
+                  className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                    isNavActive('list') 
+                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium' 
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Gestão de Alunos</span>
+                </button>
+                <button
+                  onClick={handleShowTimeSlots}
+                  className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                    isNavActive('attendance') 
+                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium' 
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Calendar className="h-4 w-4" />
+                  <span>Controle de Presença</span>
+                </button>
+                <button
+                  onClick={handleShowReports}
+                  className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                    isNavActive('reports') 
+                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium' 
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Relatórios</span>
+                </button>
+                <button
+                  onClick={handleShowCompleted}
+                  className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                    isNavActive('completed') 
+                      ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 font-medium' 
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Award className="h-4 w-4" />
+                  <span>Alunos Finalizados</span>
+                </button>
+                <button
+                  onClick={handleShowAddStudent}
+                  className="flex items-center space-x-2 text-sm px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  <span>Adicionar Aluno</span>
+                </button>
+              </nav>
+              
+              {/* Mobile menu and theme toggle */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="px-3"
+              >
+                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+            </div>
+          </div>
+          
+          {/* Mobile Navigation */}
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 pt-2 pb-3">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setCurrentView('list')}
-                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                className={`flex items-center justify-center space-x-1 text-xs px-2 py-2 rounded-md transition-colors ${
                   isNavActive('list') 
-                    ? 'bg-blue-100 text-blue-700 font-medium' 
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
                 <Users className="h-4 w-4" />
-                <span>Gestão de Alunos</span>
+                <span>Gestão</span>
               </button>
               <button
                 onClick={handleShowTimeSlots}
-                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                className={`flex items-center justify-center space-x-1 text-xs px-2 py-2 rounded-md transition-colors ${
                   isNavActive('attendance') 
-                    ? 'bg-blue-100 text-blue-700 font-medium' 
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
                 <Calendar className="h-4 w-4" />
-                <span>Controle de Presença</span>
+                <span>Presença</span>
               </button>
               <button
                 onClick={handleShowReports}
-                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                className={`flex items-center justify-center space-x-1 text-xs px-2 py-2 rounded-md transition-colors ${
                   isNavActive('reports') 
-                    ? 'bg-blue-100 text-blue-700 font-medium' 
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
                 <BarChart3 className="h-4 w-4" />
                 <span>Relatórios</span>
               </button>
               <button
-                onClick={handleShowCompleted}
-                className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
-                  isNavActive('completed') 
-                    ? 'bg-green-100 text-green-700 font-medium' 
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <Award className="h-4 w-4" />
-                <span>Alunos Finalizados</span>
-              </button>
-              <button
                 onClick={handleShowAddStudent}
-                className="flex items-center space-x-2 text-sm px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
+                className="flex items-center justify-center space-x-1 text-xs px-2 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
               >
                 <UserPlus className="h-4 w-4" />
-                <span>Adicionar Aluno</span>
+                <span>Adicionar</span>
               </button>
-            </nav>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
         {currentView === 'list' && (
           <StudentList 
             students={activeStudents}
@@ -263,9 +323,9 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
+      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-gray-600 dark:text-gray-400">
             <p>© 2024 EduControl - Sistema de Gestão Escolar</p>
             <p className="mt-1">Controle de frequência e presença para instituições de ensino</p>
           </div>

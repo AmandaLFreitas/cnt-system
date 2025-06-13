@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Users, Search, User, Calendar, BookOpen, Eye, Clock, UserPlus, Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Users, Search, User, Calendar, Eye, Clock, UserPlus } from 'lucide-react';
 
 interface StudentListProps {
   students: Student[];
@@ -21,7 +20,6 @@ interface StudentListProps {
 const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetails, onShowTimeSlots }: StudentListProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [courses] = useState(mockCourses);
-  const { theme, setTheme } = useTheme();
 
   const filteredStudents = students.filter(student =>
     student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -51,38 +49,31 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
   };
 
   return (
-    <div className="space-y-4 p-4 md:space-y-6 md:p-6">
+    <div className="space-y-4 p-2 md:space-y-6 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Gestão de Alunos</h2>
+          <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Gestão de Alunos</h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm md:text-base">Gerencie os estudantes ativos da instituição</p>
         </div>
         
         <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="px-3"
-          >
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-          
           <Button 
             onClick={onShowTimeSlots}
             variant="outline"
-            className="border-blue-200 text-blue-700 hover:bg-blue-50 text-sm"
+            size="sm"
+            className="border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:hover:bg-blue-900 text-xs md:text-sm"
           >
-            <Clock className="mr-2 h-4 w-4" />
+            <Clock className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
             <span className="hidden sm:inline">Ver Horários</span>
             <span className="sm:hidden">Horários</span>
           </Button>
           
           <Button 
             onClick={onShowAttendance}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm"
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm"
           >
-            <Calendar className="mr-2 h-4 w-4" />
+            <Calendar className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
             <span className="hidden sm:inline">Fazer Chamada</span>
             <span className="sm:hidden">Chamada</span>
           </Button>
@@ -90,12 +81,12 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-4">
           <CardTitle className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center space-x-2">
-              <Users className="h-5 w-5" />
-              <span className="text-base md:text-lg">Lista de Estudantes</span>
-              <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+              <Users className="h-4 w-4 md:h-5 md:w-5" />
+              <span className="text-sm md:text-lg">Lista de Estudantes</span>
+              <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs">
                 {students.length} {students.length === 1 ? 'Aluno' : 'Alunos'}
               </Badge>
             </div>
@@ -110,7 +101,7 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
                   placeholder="Buscar por nome ou curso..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-sm"
                 />
               </div>
             </div>
@@ -120,12 +111,12 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Aluno</TableHead>
-                      <TableHead>Curso</TableHead>
-                      <TableHead className="hidden md:table-cell">Idade</TableHead>
-                      <TableHead>Data de Início</TableHead>
-                      <TableHead>Data de Término</TableHead>
-                      <TableHead>Ações</TableHead>
+                      <TableHead className="text-xs md:text-sm">Aluno</TableHead>
+                      <TableHead className="text-xs md:text-sm">Curso</TableHead>
+                      <TableHead className="hidden lg:table-cell text-xs md:text-sm">Idade</TableHead>
+                      <TableHead className="text-xs md:text-sm">Data de Início</TableHead>
+                      <TableHead className="text-xs md:text-sm">Data de Término</TableHead>
+                      <TableHead className="text-xs md:text-sm">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -135,8 +126,8 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
                         <TableRow key={student.id}>
                           <TableCell className="font-medium">
                             <div className="flex items-center space-x-2">
-                              <User className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                              <span className="truncate">{student.fullName}</span>
+                              <User className="h-3 w-3 md:h-4 md:w-4 text-blue-600 flex-shrink-0" />
+                              <span className="truncate text-xs md:text-sm max-w-[120px] md:max-w-none">{student.fullName}</span>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -144,17 +135,17 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
                               {student.course}
                             </Badge>
                           </TableCell>
-                          <TableCell className="hidden md:table-cell">{calculateAge(student.birthDate)} anos</TableCell>
+                          <TableCell className="hidden lg:table-cell text-xs md:text-sm">{calculateAge(student.birthDate)} anos</TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-1">
-                              <Calendar className="h-4 w-4 text-green-600 flex-shrink-0" />
-                              <span className="text-sm">{formatDate(student.courseStartDate)}</span>
+                              <Calendar className="h-3 w-3 md:h-4 md:w-4 text-green-600 flex-shrink-0" />
+                              <span className="text-xs md:text-sm">{formatDate(student.courseStartDate)}</span>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-1">
-                              <Calendar className="h-4 w-4 text-red-600 flex-shrink-0" />
-                              <span className="text-sm">
+                              <Calendar className="h-3 w-3 md:h-4 md:w-4 text-red-600 flex-shrink-0" />
+                              <span className="text-xs md:text-sm">
                                 {courseInfo 
                                   ? formatDate(courseInfo.endDate)
                                   : 'Data não disponível'
@@ -167,11 +158,11 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
                               variant="outline"
                               size="sm"
                               onClick={() => onShowDetails(student)}
-                              className="text-blue-600 hover:text-blue-700 text-xs"
+                              className="text-blue-600 hover:text-blue-700 text-xs px-2 py-1"
                             >
-                              <Eye className="h-4 w-4 mr-1" />
-                              <span className="hidden sm:inline">Ver Detalhes</span>
-                              <span className="sm:hidden">Ver</span>
+                              <Eye className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                              <span className="hidden md:inline">Ver Detalhes</span>
+                              <span className="md:hidden">Ver</span>
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -185,13 +176,13 @@ const StudentList = ({ students, onSelectStudent, onShowAttendance, onShowDetail
                 {searchTerm ? (
                   <div>
                     <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-500">Nenhum aluno encontrado com "{searchTerm}"</p>
+                    <p className="text-gray-500 text-sm md:text-base">Nenhum aluno encontrado com "{searchTerm}"</p>
                   </div>
                 ) : (
                   <div>
                     <UserPlus className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-500">Nenhum aluno cadastrado ainda</p>
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="text-gray-500 text-sm md:text-base">Nenhum aluno cadastrado ainda</p>
+                    <p className="text-xs md:text-sm text-gray-400 mt-1">
                       Adicione novos alunos para começar a gerenciar
                     </p>
                   </div>
