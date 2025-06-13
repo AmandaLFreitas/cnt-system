@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
-import { Student, Course, ClassSchedule, WeekDay } from '../types';
-import { mockCourses, mockSchedules } from '../data/mockData';
+import { Student, WeekDay, AVAILABLE_TIMES } from '../types';
+import { mockCourses } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,11 +23,9 @@ interface StudentDetailsProps {
 }
 
 const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
-  const [courses] = useState<Course[]>(mockCourses);
-  const [schedules] = useState<ClassSchedule[]>(mockSchedules);
+  const [courses] = useState(mockCourses);
 
   const studentCourse = courses.find(course => course.name === student.course);
-  const studentSchedule = schedules.find(schedule => schedule.id === student.scheduleId);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
@@ -59,17 +57,41 @@ const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
   };
 
   const getTotalWeeklyHours = () => {
-    if (student.customSchedule) {
-      return Object.values(student.customSchedule.hoursPerDay).reduce((total, hours) => total + (hours || 0), 0);
-    }
-    if (studentSchedule) {
-      return studentSchedule.days.length * studentSchedule.hoursPerClass;
-    }
-    return 0;
+    if (!student.schedule) return 0;
+    
+    let totalHours = 0;
+    Object.entries(student.schedule).forEach(([day, timeIds]) => {
+      if (timeIds && timeIds.length > 0) {
+        timeIds.forEach(timeId => {
+          const timeSlot = AVAILABLE_TIMES[day as WeekDay]?.find(slot => slot.id === timeId);
+          if (timeSlot) {
+            totalHours += timeSlot.hours;
+          }
+        });
+      }
+    });
+    return totalHours;
+  };
+
+  const getStudentScheduleDisplay = () => {
+    if (!student.schedule) return null;
+
+    const scheduleByDay: { [key: string]: { timeSlot: any, hours: number }[] } = {};
+    
+    Object.entries(student.schedule).forEach(([day, timeIds]) => {
+      if (timeIds && timeIds.length > 0) {
+        scheduleByDay[day] = timeIds.map(timeId => {
+          const timeSlot = AVAILABLE_TIMES[day as WeekDay]?.find(slot => slot.id === timeId);
+          return { timeSlot, hours: timeSlot?.hours || 0 };
+        }).filter(item => item.timeSlot);
+      }
+    });
+
+    return scheduleByDay;
   };
 
   const isMinor = calculateAge(student.birthDate) < 18;
-  const isCustomSchedule = student.scheduleId === '4' && student.customSchedule;
+  const scheduleDisplay = getStudentScheduleDisplay();
 
   return (
     <div className="space-y-6">
@@ -130,18 +152,50 @@ const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
                 <p className="text-lg font-semibold text-gray-900">{student.email}</p>
               </div>
             )}
-            
-            {isMinor && student.guardian && (
+
+            {student.cpf && (
               <div>
-                <label className="text-sm font-medium text-gray-600">Responsável</label>
-                <div className="flex items-center space-x-2">
-                  <Users className="h-4 w-4 text-orange-600" />
-                  <p className="text-lg font-semibold text-gray-900">{student.guardian}</p>
-                  <Badge className="bg-orange-100 text-orange-800 border-orange-200">
-                    Menor de Idade
-                  </Badge>
-                </div>
+                <label className="text-sm font-medium text-gray-600">CPF</label>
+                <p className="text-lg font-semibold text-gray-900">{student.cpf}</p>
               </div>
+            )}
+
+            {student.address && (
+              <div>
+                <label className="text-sm font-medium text-gray-600">Endereço</label>
+                <p className="text-lg font-semibold text-gray-900">{student.address}</p>
+              </div>
+            )}
+            
+            {isMinor && (
+              <>
+                {student.guardian && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Responsável</label>
+                    <div className="flex items-center space-x-2">
+                      <Users className="h-4 w-4 text-orange-600" />
+                      <p className="text-lg font-semibold text-gray-900">{student.guardian}</p>
+                      <Badge className="bg-orange-100 text-orange-800 border-orange-200">
+                        Menor de Idade
+                      </Badge>
+                    </div>
+                  </div>
+                )}
+                
+                {student.fatherName && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Nome do Pai</label>
+                    <p className="text-lg font-semibold text-gray-900">{student.fatherName}</p>
+                  </div>
+                )}
+                
+                {student.motherName && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Nome da Mãe</label>
+                    <p className="text-lg font-semibold text-gray-900">{student.motherName}</p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </CardContent>
@@ -193,7 +247,7 @@ const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {isCustomSchedule ? (
+          {scheduleDisplay && Object.keys(scheduleDisplay).length > 0 ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -202,8 +256,8 @@ const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
                     {getTotalWeeklyHours()}h por semana
                   </p>
                 </div>
-                <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-                  Personalizado
+                <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                  Individual
                 </Badge>
               </div>
               
@@ -211,61 +265,26 @@ const StudentDetails = ({ student, onBack, onEdit }: StudentDetailsProps) => {
                 <div>
                   <label className="text-sm font-medium text-gray-600">Cronograma Semanal</label>
                   <div className="grid gap-2 mt-2">
-                    {student.customSchedule.days.map((day) => {
-                      const hours = student.customSchedule?.hoursPerDay[day] || 0;
-                      return (
-                        <div key={day} className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
+                    {Object.entries(scheduleDisplay).map(([day, timeSlots]) => (
+                      <div key={day} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                            {getDayName(day as WeekDay)}
+                          </Badge>
                           <div className="flex items-center space-x-2">
-                            <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                              {getDayName(day)}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Clock className="h-4 w-4 text-purple-600" />
-                            <span className="text-sm font-semibold text-purple-900">
-                              {hours}h
+                            <Clock className="h-4 w-4 text-blue-600" />
+                            <span className="text-sm font-semibold text-blue-900">
+                              {timeSlots.reduce((sum, slot) => sum + slot.hours, 0)}h
                             </span>
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : studentSchedule ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{studentSchedule.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    {studentSchedule.hoursPerClass}h por aula - {getTotalWeeklyHours()}h por semana
-                  </p>
-                </div>
-                <Badge className="bg-green-100 text-green-800 border-green-200">
-                  Padrão
-                </Badge>
-              </div>
-              
-              <div className="grid gap-3">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Dias da Semana</label>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {studentSchedule.days.map((day) => (
-                      <Badge key={day} variant="secondary" className="bg-blue-100 text-blue-800">
-                        {getDayName(day)}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Horários</label>
-                  <div className="grid gap-2 mt-1 sm:grid-cols-2 lg:grid-cols-3">
-                    {studentSchedule.times.map((time, index) => (
-                      <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                        <Clock className="h-4 w-4 text-gray-600" />
-                        <span className="text-sm font-medium">{time}</span>
+                        <div className="space-y-1">
+                          {timeSlots.map((slot, index) => (
+                            <div key={index} className="text-sm text-gray-700">
+                              {slot.timeSlot.time} ({slot.timeSlot.hours}h)
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     ))}
                   </div>
