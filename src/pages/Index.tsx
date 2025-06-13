@@ -7,12 +7,12 @@ import AttendanceSheet from '../components/AttendanceSheet';
 import StudentFrequency from '../components/StudentFrequency';
 import StudentDetails from '../components/StudentDetails';
 import EditStudent from '../components/EditStudent';
-import ScheduleView from '../components/ScheduleView';
+import TimeSlotView from '../components/TimeSlotView';
 import Reports from '../components/Reports';
 import AddStudent from '../components/AddStudent';
 import { GraduationCap, Users, Calendar, BarChart3, UserPlus } from 'lucide-react';
 
-type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'schedule' | 'reports' | 'add';
+type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'reports' | 'add';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('list');
@@ -48,8 +48,8 @@ const Index = () => {
     setCurrentView('attendance');
   };
 
-  const handleShowSchedule = () => {
-    setCurrentView('schedule');
+  const handleShowTimeSlots = () => {
+    setCurrentView('timeSlots');
   };
 
   const handleShowReports = () => {
@@ -71,7 +71,7 @@ const Index = () => {
 
   const isNavActive = (view: View) => {
     if (view === 'list') return currentView === 'list' || currentView === 'details' || currentView === 'edit' || currentView === 'frequency' || currentView === 'add';
-    if (view === 'attendance') return currentView === 'attendance' || currentView === 'schedule';
+    if (view === 'attendance') return currentView === 'attendance' || currentView === 'timeSlots';
     if (view === 'reports') return currentView === 'reports';
     return false;
   };
@@ -105,7 +105,7 @@ const Index = () => {
                 <span>Gestão de Alunos</span>
               </button>
               <button
-                onClick={handleShowSchedule}
+                onClick={handleShowTimeSlots}
                 className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
                   isNavActive('attendance') 
                     ? 'bg-blue-100 text-blue-700 font-medium' 
@@ -142,9 +142,11 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {currentView === 'list' && (
           <StudentList 
+            students={students}
             onSelectStudent={handleSelectStudent}
             onShowAttendance={handleShowAttendance}
             onShowDetails={handleShowDetails}
+            onShowTimeSlots={handleShowTimeSlots}
           />
         )}
         
@@ -159,12 +161,18 @@ const Index = () => {
           <AttendanceSheet onBack={handleBack} />
         )}
         
-        {currentView === 'schedule' && (
-          <ScheduleView onBack={handleBack} />
+        {currentView === 'timeSlots' && (
+          <TimeSlotView 
+            students={students}
+            onBack={handleBack} 
+          />
         )}
         
         {currentView === 'reports' && (
-          <Reports onBack={handleBack} />
+          <Reports 
+            students={students}
+            onBack={handleBack} 
+          />
         )}
         
         {currentView === 'frequency' && selectedStudent && (

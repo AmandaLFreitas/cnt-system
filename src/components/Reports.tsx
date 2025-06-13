@@ -1,19 +1,19 @@
 
 import { useState, useMemo } from 'react';
 import { Student, AttendanceRecord } from '../types';
-import { mockStudents, mockAttendanceRecords } from '../data/mockData';
+import { mockAttendanceRecords } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, BarChart3, Users, Clock, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, BarChart3, Clock, CheckCircle, XCircle } from 'lucide-react';
 
 interface ReportsProps {
+  students: Student[];
   onBack: () => void;
 }
 
-const Reports = ({ onBack }: ReportsProps) => {
-  const [students] = useState<Student[]>(mockStudents);
+const Reports = ({ students, onBack }: ReportsProps) => {
   const [attendanceRecords] = useState<AttendanceRecord[]>(mockAttendanceRecords);
 
   const reportData = useMemo(() => {
@@ -38,18 +38,7 @@ const Reports = ({ onBack }: ReportsProps) => {
       };
     });
 
-    const overallStats = {
-      totalStudents: students.length,
-      totalClasses: attendanceRecords.length,
-      totalPresentClasses: attendanceRecords.filter(record => record.status === 'present').length,
-      totalAbsentClasses: attendanceRecords.filter(record => record.status === 'absent').length,
-      totalHours: attendanceRecords
-        .filter(record => record.status === 'present')
-        .reduce((sum, record) => sum + record.classHours, 0),
-      averageAttendance: studentStats.reduce((sum, stat) => sum + stat.attendancePercentage, 0) / studentStats.length
-    };
-
-    return { studentStats, overallStats };
+    return { studentStats };
   }, [students, attendanceRecords]);
 
   const getAttendanceStatus = (percentage: number) => {
@@ -68,67 +57,15 @@ const Reports = ({ onBack }: ReportsProps) => {
         </Button>
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Relatórios</h2>
-          <p className="text-gray-600 mt-1">Análise completa de frequência e desempenho</p>
+          <p className="text-gray-600 mt-1">Controle individual de frequência dos alunos</p>
         </div>
       </div>
 
-      {/* Estatísticas Gerais */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2">
-              <Users className="h-5 w-5 text-blue-600" />
-              <div>
-                <p className="text-2xl font-bold text-blue-600">{reportData.overallStats.totalStudents}</p>
-                <p className="text-sm text-gray-600">Total de Alunos</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              <div>
-                <p className="text-2xl font-bold text-green-600">{reportData.overallStats.totalPresentClasses}</p>
-                <p className="text-sm text-gray-600">Total de Presenças</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2">
-              <Clock className="h-5 w-5 text-purple-600" />
-              <div>
-                <p className="text-2xl font-bold text-purple-600">{reportData.overallStats.totalHours}h</p>
-                <p className="text-sm text-gray-600">Horas Totais</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-orange-600" />
-              <div>
-                <p className="text-2xl font-bold text-orange-600">{reportData.overallStats.averageAttendance.toFixed(1)}%</p>
-                <p className="text-sm text-gray-600">Frequência Média</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Relatório Detalhado por Aluno */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <BarChart3 className="h-5 w-5" />
-            <span>Relatório Detalhado por Aluno</span>
+            <span>Frequência Individual dos Alunos</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -139,7 +76,7 @@ const Reports = ({ onBack }: ReportsProps) => {
                 <TableHead>Curso</TableHead>
                 <TableHead>Presenças</TableHead>
                 <TableHead>Faltas</TableHead>
-                <TableHead>Horas</TableHead>
+                <TableHead>Horas Cumpridas</TableHead>
                 <TableHead>Frequência</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>

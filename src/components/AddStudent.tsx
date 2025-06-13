@@ -1,15 +1,13 @@
 
 import { useState } from 'react';
-import { Student, ClassSchedule } from '../types';
-import { mockSchedules } from '../data/mockData';
+import { Student, StudentSchedule } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Save, UserPlus } from 'lucide-react';
+import { ArrowLeft, Save, UserPlus, User, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import CustomScheduleEditor from './CustomScheduleEditor';
+import ScheduleSelector from './ScheduleSelector';
 
 interface AddStudentProps {
   onBack: () => void;
@@ -17,19 +15,21 @@ interface AddStudentProps {
 }
 
 const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
-  const [schedules] = useState<ClassSchedule[]>(mockSchedules);
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
     fullName: '',
+    cpf: '',
     guardian: '',
+    fatherName: '',
+    motherName: '',
     phone: '',
     birthDate: '',
     course: '',
     courseStartDate: '',
     email: '',
-    scheduleId: '',
-    customSchedule: undefined as any
+    address: '',
+    schedule: {} as StudentSchedule
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -39,21 +39,10 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
     }));
   };
 
-  const handleScheduleChange = (scheduleId: string) => {
-    const newFormData = { ...formData, scheduleId };
-    
-    // Se não for horário personalizado, limpar customSchedule
-    if (scheduleId !== '4') {
-      newFormData.customSchedule = undefined;
-    }
-    
-    setFormData(newFormData);
-  };
-
-  const handleCustomScheduleChange = (customSchedule: any) => {
+  const handleScheduleChange = (schedule: StudentSchedule) => {
     setFormData(prev => ({
       ...prev,
-      customSchedule
+      schedule
     }));
   };
 
@@ -77,7 +66,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
 
   const handleSave = () => {
     // Validação básica
-    if (!formData.fullName || !formData.phone || !formData.birthDate || !formData.course || !formData.scheduleId) {
+    if (!formData.fullName || !formData.phone || !formData.birthDate || !formData.course) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos obrigatórios.",
@@ -87,10 +76,19 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
     }
 
     const isMinor = calculateAge(formData.birthDate) < 18;
-    if (isMinor && !formData.guardian) {
+    if (isMinor && (!formData.guardian || !formData.fatherName || !formData.motherName)) {
       toast({
-        title: "Responsável obrigatório",
-        description: "Para menores de 18 anos, é obrigatório informar o responsável.",
+        title: "Dados do responsável obrigatórios",
+        description: "Para menores de 18 anos, é obrigatório informar o responsável e nome dos pais.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (Object.keys(formData.schedule).length === 0) {
+      toast({
+        title: "Horário obrigatório",
+        description: "Por favor, selecione pelo menos um horário de aula.",
         variant: "destructive"
       });
       return;
@@ -103,10 +101,13 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
       birthDate: formData.birthDate,
       course: formData.course,
       courseStartDate: formData.courseStartDate || new Date().toISOString().split('T')[0],
-      scheduleId: formData.scheduleId,
+      schedule: formData.schedule,
+      ...(formData.cpf && { cpf: formData.cpf }),
       ...(formData.email && { email: formData.email }),
+      ...(formData.address && { address: formData.address }),
       ...(formData.guardian && { guardian: formData.guardian }),
-      ...(formData.customSchedule && { customSchedule: formData.customSchedule })
+      ...(formData.fatherName && { fatherName: formData.fatherName }),
+      ...(formData.motherName && { motherName: formData.motherName })
     };
 
     onSave(newStudent);
@@ -117,8 +118,6 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
   };
 
   const isMinor = calculateAge(formData.birthDate) < 18;
-  const selectedSchedule = schedules.find(s => s.id === formData.scheduleId);
-  const isCustomSchedule = formData.scheduleId === '4';
 
   return (
     <div className="space-y-6">
@@ -153,12 +152,12 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="phone">Telefone *</Label>
+              <Label htmlFor="cpf">CPF</Label>
               <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="(11) 99999-9999"
+                id="cpf"
+                value={formData.cpf}
+                onChange={(e) => handleInputChange('cpf', e.target.value)}
+                placeholder="000.000.000-00"
               />
             </div>
             
@@ -173,7 +172,17 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email (Opcional)</Label>
+              <Label htmlFor="phone">Telefone *</Label>
+              <Input
+                id="phone"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                placeholder="(11) 99999-9999"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -183,16 +192,48 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
               />
             </div>
             
+            <div className="space-y-2">
+              <Label htmlFor="address">Endereço</Label>
+              <Input
+                id="address"
+                value={formData.address}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+                placeholder="Endereço completo"
+              />
+            </div>
+            
             {isMinor && (
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="guardian">Responsável *</Label>
-                <Input
-                  id="guardian"
-                  value={formData.guardian}
-                  onChange={(e) => handleInputChange('guardian', e.target.value)}
-                  placeholder="Nome do responsável legal"
-                />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="guardian">Responsável *</Label>
+                  <Input
+                    id="guardian"
+                    value={formData.guardian}
+                    onChange={(e) => handleInputChange('guardian', e.target.value)}
+                    placeholder="Nome do responsável legal"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="fatherName">Nome do Pai *</Label>
+                  <Input
+                    id="fatherName"
+                    value={formData.fatherName}
+                    onChange={(e) => handleInputChange('fatherName', e.target.value)}
+                    placeholder="Nome completo do pai"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="motherName">Nome da Mãe *</Label>
+                  <Input
+                    id="motherName"
+                    value={formData.motherName}
+                    onChange={(e) => handleInputChange('motherName', e.target.value)}
+                    placeholder="Nome completo da mãe"
+                  />
+                </div>
+              </>
             )}
           </div>
         </CardContent>
@@ -227,48 +268,10 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Horário de Aula</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>Selecionar Tipo de Horário *</Label>
-            <Select
-              value={formData.scheduleId}
-              onValueChange={handleScheduleChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione um horário" />
-              </SelectTrigger>
-              <SelectContent>
-                {schedules.map((schedule) => (
-                  <SelectItem key={schedule.id} value={schedule.id}>
-                    {schedule.name}
-                    {schedule.hoursPerClass > 0 && ` - ${schedule.hoursPerClass}h por aula`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {selectedSchedule && !isCustomSchedule && (
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-medium text-gray-700 mb-2">Horário Selecionado:</p>
-              <p className="text-sm text-gray-600">
-                <strong>{selectedSchedule.name}</strong> - {selectedSchedule.times.join(', ')}
-              </p>
-            </div>
-          )}
-          
-          {isCustomSchedule && (
-            <CustomScheduleEditor
-              schedule={formData.customSchedule}
-              onChange={handleCustomScheduleChange}
-            />
-          )}
-        </CardContent>
-      </Card>
+      <ScheduleSelector
+        schedule={formData.schedule}
+        onChange={handleScheduleChange}
+      />
 
       <div className="flex justify-end">
         <Button 
