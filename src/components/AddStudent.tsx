@@ -119,14 +119,14 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
           Voltar
         </Button>
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Adicionar Novo Aluno</h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Cadastre um novo estudante no sistema</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Adicionar Novo Aluno</h2>
+          <p className="text-gray-600 mt-1">Cadastre um novo estudante no sistema</p>
         </div>
       </div>
 
-      <Card className="border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30">
+      <Card className="border-blue-200 bg-blue-50">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
+          <CardTitle className="flex items-center space-x-2 text-gray-900">
             <UserPlus className="h-5 w-5" />
             <span>Informações Pessoais</span>
           </CardTitle>
@@ -134,104 +134,104 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
         <CardContent className="space-y-4">
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="fullName" className="text-gray-700 dark:text-gray-300">Nome Completo *</Label>
+              <Label htmlFor="fullName" className="text-gray-700">Nome Completo *</Label>
               <Input
                 id="fullName"
                 value={formData.fullName}
                 onChange={(e) => handleInputChange('fullName', e.target.value)}
                 placeholder="Nome completo do aluno"
-                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="cpf" className="text-gray-700 dark:text-gray-300">CPF</Label>
+              <Label htmlFor="cpf" className="text-gray-700">CPF</Label>
               <Input
                 id="cpf"
                 value={formData.cpf}
                 onChange={(e) => handleInputChange('cpf', e.target.value)}
                 placeholder="000.000.000-00"
-                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="birthDate" className="text-gray-700 dark:text-gray-300">Data de Nascimento *</Label>
+              <Label htmlFor="birthDate" className="text-gray-700">Data de Nascimento *</Label>
               <Input
                 id="birthDate"
                 type="date"
                 value={formData.birthDate}
                 onChange={(e) => handleInputChange('birthDate', e.target.value)}
-                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white border-gray-300 text-gray-900"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-gray-700 dark:text-gray-300">Telefone *</Label>
+              <Label htmlFor="phone" className="text-gray-700">Telefone *</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 placeholder="(11) 99999-9999"
-                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email</Label>
+              <Label htmlFor="email" className="text-gray-700">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 placeholder="email@exemplo.com"
-                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="address" className="text-gray-700 dark:text-gray-300">Endereço</Label>
+              <Label htmlFor="address" className="text-gray-700">Endereço</Label>
               <Input
                 id="address"
                 value={formData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 placeholder="Endereço completo"
-                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
               />
             </div>
             
             {isMinor && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="guardian" className="text-gray-700 dark:text-gray-300">Responsável</Label>
+                  <Label htmlFor="guardian" className="text-gray-700">Responsável</Label>
                   <Input
                     id="guardian"
                     value={formData.guardian}
                     onChange={(e) => handleInputChange('guardian', e.target.value)}
                     placeholder="Nome do responsável legal"
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                    className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="fatherName" className="text-gray-700 dark:text-gray-300">Nome do Pai</Label>
+                  <Label htmlFor="fatherName" className="text-gray-700">Nome do Pai</Label>
                   <Input
                     id="fatherName"
                     value={formData.fatherName}
                     onChange={(e) => handleInputChange('fatherName', e.target.value)}
                     placeholder="Nome completo do pai"
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                    className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="motherName" className="text-gray-700 dark:text-gray-300">Nome da Mãe</Label>
+                  <Label htmlFor="motherName" className="text-gray-700">Nome da Mãe</Label>
                   <Input
                     id="motherName"
                     value={formData.motherName}
                     onChange={(e) => handleInputChange('motherName', e.target.value)}
                     placeholder="Nome completo da mãe"
-                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                    className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                   />
                 </div>
               </>

@@ -62,9 +62,9 @@ const CustomScheduleEditor = ({ schedule, onChange }: CustomScheduleEditorProps)
   };
 
   return (
-    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className="bg-white border-gray-200">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
+        <CardTitle className="flex items-center space-x-2 text-gray-900">
           <Clock className="h-5 w-5" />
           <span>Selecionar Horários</span>
         </CardTitle>
@@ -81,7 +81,7 @@ const CustomScheduleEditor = ({ schedule, onChange }: CustomScheduleEditorProps)
             
             return (
               <div key={day.key} className="space-y-2">
-                <h4 className="font-medium text-gray-900 dark:text-gray-100">{day.label}</h4>
+                <h4 className="font-medium text-gray-900">{day.label}</h4>
                 <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
                   {availableSlots.map((slot) => (
                     <div key={slot.id} className="flex items-center space-x-2">
@@ -92,7 +92,7 @@ const CustomScheduleEditor = ({ schedule, onChange }: CustomScheduleEditorProps)
                           handleTimeSlotToggle(day.key, slot.id, checked as boolean)
                         }
                       />
-                      <label htmlFor={slot.id} className="text-sm text-gray-900 dark:text-gray-100 cursor-pointer">
+                      <label htmlFor={slot.id} className="text-sm text-gray-900 cursor-pointer">
                         {slot.time} ({slot.hours}h)
                       </label>
                     </div>
@@ -103,12 +103,12 @@ const CustomScheduleEditor = ({ schedule, onChange }: CustomScheduleEditorProps)
           })}
         </div>
         
-        <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
+        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+            <span className="text-sm font-medium text-blue-900">
               Total de horas semanais:
             </span>
-            <span className="text-lg font-bold text-blue-900 dark:text-blue-100">
+            <span className="text-lg font-bold text-blue-900">
               {getTotalWeeklyHours()}h
             </span>
           </div>
