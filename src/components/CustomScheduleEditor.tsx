@@ -1,12 +1,10 @@
 
 import { useState } from 'react';
-import { StudentSchedule, WeekDay } from '../types';
+import { StudentSchedule, WeekDay, AVAILABLE_TIMES } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Clock, Plus, Minus } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 interface CustomScheduleEditorProps {
   schedule?: StudentSchedule;
@@ -15,7 +13,7 @@ interface CustomScheduleEditorProps {
 
 const CustomScheduleEditor = ({ schedule, onChange }: CustomScheduleEditorProps) => {
   const [localSchedule, setLocalSchedule] = useState<StudentSchedule>(
-    schedule || { days: [], hoursPerDay: {} }
+    schedule || {}
   );
 
   const weekDays: { key: WeekDay; label: string }[] = [
@@ -27,40 +25,41 @@ const CustomScheduleEditor = ({ schedule, onChange }: CustomScheduleEditorProps)
     { key: 'saturday', label: 'Sábado' }
   ];
 
-  const handleDayToggle = (day: WeekDay, checked: boolean) => {
+  const handleTimeSlotToggle = (day: WeekDay, timeSlotId: string, checked: boolean) => {
     const newSchedule = { ...localSchedule };
     
+    if (!newSchedule[day]) {
+      newSchedule[day] = [];
+    }
+    
     if (checked) {
-      // Adicionar dia
-      newSchedule.days = [...new Set([...newSchedule.days, day])];
-      if (!newSchedule.hoursPerDay[day]) {
-        newSchedule.hoursPerDay[day] = 1;
-      }
+      newSchedule[day] = [...(newSchedule[day] || []), timeSlotId];
     } else {
-      // Remover dia
-      newSchedule.days = newSchedule.days.filter(d => d !== day);
-      delete newSchedule.hoursPerDay[day];
+      newSchedule[day] = (newSchedule[day] || []).filter(id => id !== timeSlotId);
+    }
+    
+    // Remove o dia se não tiver horários
+    if (newSchedule[day]?.length === 0) {
+      delete newSchedule[day];
     }
     
     setLocalSchedule(newSchedule);
     onChange(newSchedule);
   };
 
-  const handleHoursChange = (day: WeekDay, hours: number) => {
-    const newSchedule = {
-      ...localSchedule,
-      hoursPerDay: {
-        ...localSchedule.hoursPerDay,
-        [day]: Math.max(1, Math.min(8, hours)) // Mínimo 1h, máximo 8h
-      }
-    };
-    
-    setLocalSchedule(newSchedule);
-    onChange(newSchedule);
-  };
-
   const getTotalWeeklyHours = () => {
-    return Object.values(localSchedule.hoursPerDay).reduce((total, hours) => total + (hours || 0), 0);
+    let totalHours = 0;
+    Object.entries(localSchedule).forEach(([day, timeIds]) => {
+      if (timeIds && timeIds.length > 0) {
+        timeIds.forEach(timeId => {
+          const timeSlot = AVAILABLE_TIMES[day as WeekDay]?.find(slot => slot.id === timeId);
+          if (timeSlot) {
+            totalHours += timeSlot.hours;
+          }
+        });
+      }
+    });
+    return totalHours;
   };
 
   return (
@@ -68,85 +67,53 @@ const CustomScheduleEditor = ({ schedule, onChange }: CustomScheduleEditorProps)
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Clock className="h-5 w-5" />
-          <span>Horário Personalizado</span>
+          <span>Selecionar Horários</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-3">
-          <Label className="text-sm font-medium">Selecione os dias da semana:</Label>
-          
+        <div className="space-y-4">
           {weekDays.map((day) => {
-            const isSelected = localSchedule.days.includes(day.key);
-            const hours = localSchedule.hoursPerDay[day.key] || 1;
+            const availableSlots = AVAILABLE_TIMES[day.key] || [];
+            const selectedSlots = localSchedule[day.key] || [];
+            
+            if (availableSlots.length === 0) {
+              return null; // Não mostrar sexta-feira
+            }
             
             return (
-              <div key={day.key} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <Checkbox
-                    id={day.key}
-                    checked={isSelected}
-                    onCheckedChange={(checked) => handleDayToggle(day.key, checked as boolean)}
-                  />
-                  <Label htmlFor={day.key} className="font-medium">
-                    {day.label}
-                  </Label>
-                </div>
-                
-                {isSelected && (
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleHoursChange(day.key, hours - 1)}
-                      disabled={hours <= 1}
-                    >
-                      <Minus className="h-3 w-3" />
-                    </Button>
-                    
-                    <div className="flex items-center space-x-1 min-w-[80px] justify-center">
-                      <Input
-                        type="number"
-                        min="1"
-                        max="8"
-                        value={hours}
-                        onChange={(e) => handleHoursChange(day.key, parseInt(e.target.value) || 1)}
-                        className="w-16 text-center"
+              <div key={day.key} className="space-y-2">
+                <h4 className="font-medium text-gray-900">{day.label}</h4>
+                <div className="grid gap-2 md:grid-cols-2">
+                  {availableSlots.map((slot) => (
+                    <div key={slot.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={slot.id}
+                        checked={selectedSlots.includes(slot.id)}
+                        onCheckedChange={(checked) => 
+                          handleTimeSlotToggle(day.key, slot.id, checked as boolean)
+                        }
                       />
-                      <span className="text-sm text-gray-600">h</span>
+                      <label htmlFor={slot.id} className="text-sm">
+                        {slot.time} ({slot.hours}h)
+                      </label>
                     </div>
-                    
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleHoursChange(day.key, hours + 1)}
-                      disabled={hours >= 8}
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
             );
           })}
         </div>
         
-        {localSchedule.days.length > 0 && (
-          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-blue-900">
-                Total de horas semanais:
-              </span>
-              <span className="text-lg font-bold text-blue-900">
-                {getTotalWeeklyHours()}h
-              </span>
-            </div>
-            <div className="text-xs text-blue-700 mt-1">
-              Dias selecionados: {localSchedule.days.length}
-            </div>
+        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-blue-900">
+              Total de horas semanais:
+            </span>
+            <span className="text-lg font-bold text-blue-900">
+              {getTotalWeeklyHours()}h
+            </span>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );

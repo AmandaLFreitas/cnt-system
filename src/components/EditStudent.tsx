@@ -1,12 +1,10 @@
 
 import { useState } from 'react';
-import { Student, ClassSchedule } from '../types';
-import { mockSchedules } from '../data/mockData';
+import { Student } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Save, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import CustomScheduleEditor from './CustomScheduleEditor';
@@ -18,7 +16,6 @@ interface EditStudentProps {
 }
 
 const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
-  const [schedules] = useState<ClassSchedule[]>(mockSchedules);
   const [formData, setFormData] = useState<Student>(student);
   const { toast } = useToast();
 
@@ -29,21 +26,10 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
     }));
   };
 
-  const handleScheduleChange = (scheduleId: string) => {
-    const newFormData = { ...formData, scheduleId };
-    
-    // Se não for horário personalizado, limpar customSchedule
-    if (scheduleId !== '4') {
-      delete newFormData.customSchedule;
-    }
-    
-    setFormData(newFormData);
-  };
-
-  const handleCustomScheduleChange = (customSchedule: any) => {
+  const handleScheduleChange = (schedule: any) => {
     setFormData(prev => ({
       ...prev,
-      customSchedule
+      schedule
     }));
   };
 
@@ -69,8 +55,6 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
   };
 
   const isMinor = calculateAge(formData.birthDate) < 18;
-  const selectedSchedule = schedules.find(s => s.id === formData.scheduleId);
-  const isCustomSchedule = formData.scheduleId === '4';
 
   return (
     <div className="space-y-6">
@@ -134,17 +118,59 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
                 placeholder="email@exemplo.com"
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cpf">CPF</Label>
+              <Input
+                id="cpf"
+                value={formData.cpf || ''}
+                onChange={(e) => handleInputChange('cpf', e.target.value)}
+                placeholder="000.000.000-00"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address">Endereço</Label>
+              <Input
+                id="address"
+                value={formData.address || ''}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+                placeholder="Endereço completo"
+              />
+            </div>
             
             {isMinor && (
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="guardian">Responsável</Label>
-                <Input
-                  id="guardian"
-                  value={formData.guardian || ''}
-                  onChange={(e) => handleInputChange('guardian', e.target.value)}
-                  placeholder="Nome do responsável legal"
-                />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="guardian">Responsável</Label>
+                  <Input
+                    id="guardian"
+                    value={formData.guardian || ''}
+                    onChange={(e) => handleInputChange('guardian', e.target.value)}
+                    placeholder="Nome do responsável legal"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="fatherName">Nome do Pai</Label>
+                  <Input
+                    id="fatherName"
+                    value={formData.fatherName || ''}
+                    onChange={(e) => handleInputChange('fatherName', e.target.value)}
+                    placeholder="Nome do pai"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="motherName">Nome da Mãe</Label>
+                  <Input
+                    id="motherName"
+                    value={formData.motherName || ''}
+                    onChange={(e) => handleInputChange('motherName', e.target.value)}
+                    placeholder="Nome da mãe"
+                  />
+                </div>
+              </>
             )}
           </div>
         </CardContent>
@@ -179,48 +205,10 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Horário de Aula</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>Selecionar Tipo de Horário</Label>
-            <Select
-              value={formData.scheduleId}
-              onValueChange={handleScheduleChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione um horário" />
-              </SelectTrigger>
-              <SelectContent>
-                {schedules.map((schedule) => (
-                  <SelectItem key={schedule.id} value={schedule.id}>
-                    {schedule.name}
-                    {schedule.hoursPerClass > 0 && ` - ${schedule.hoursPerClass}h por aula`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {selectedSchedule && !isCustomSchedule && (
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-medium text-gray-700 mb-2">Horário Selecionado:</p>
-              <p className="text-sm text-gray-600">
-                <strong>{selectedSchedule.name}</strong> - {selectedSchedule.times.join(', ')}
-              </p>
-            </div>
-          )}
-          
-          {isCustomSchedule && (
-            <CustomScheduleEditor
-              schedule={formData.customSchedule}
-              onChange={handleCustomScheduleChange}
-            />
-          )}
-        </CardContent>
-      </Card>
+      <CustomScheduleEditor
+        schedule={formData.schedule}
+        onChange={handleScheduleChange}
+      />
 
       <div className="flex justify-end">
         <Button 
