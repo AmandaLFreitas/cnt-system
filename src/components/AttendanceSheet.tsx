@@ -1,6 +1,7 @@
+
 import { useState } from 'react';
 import { Student, AttendanceRecord, WeekDay, AVAILABLE_TIMES } from '../types';
-import { mockStudents, mockAttendance } from '../data/mockData';
+import { mockStudents, mockAttendanceRecords } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,8 +15,7 @@ interface AttendanceSheetProps {
 
 const AttendanceSheet = ({ onBack }: AttendanceSheetProps) => {
   const [students] = useState<Student[]>(mockStudents);
-  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(mockAttendance);
-  
+  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(mockAttendanceRecords);
   const [todayAttendance, setTodayAttendance] = useState<Record<string, 'present' | 'absent'>>({});
   const [selectedDay, setSelectedDay] = useState<WeekDay>('monday');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');

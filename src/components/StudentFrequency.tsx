@@ -1,6 +1,7 @@
+
 import { useState, useMemo } from 'react';
 import { Student, AttendanceRecord, Course } from '../types';
-import { mockAttendance, mockCourses } from '../data/mockData';
+import { mockAttendanceRecords, mockCourses } from '../data/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +16,7 @@ interface StudentFrequencyProps {
 }
 
 const StudentFrequency = ({ student, onBack }: StudentFrequencyProps) => {
-  const [attendanceRecords] = useState<AttendanceRecord[]>(mockAttendance);
+  const [attendanceRecords] = useState<AttendanceRecord[]>(mockAttendanceRecords);
   const [courses] = useState<Course[]>(mockCourses);
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
 
