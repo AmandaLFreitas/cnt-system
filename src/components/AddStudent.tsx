@@ -124,7 +124,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
         </div>
       </div>
 
-      <Card className="border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-700">
+      <Card className="border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
             <UserPlus className="h-5 w-5" />
@@ -140,7 +140,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 value={formData.fullName}
                 onChange={(e) => handleInputChange('fullName', e.target.value)}
                 placeholder="Nome completo do aluno"
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
@@ -151,7 +151,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 value={formData.cpf}
                 onChange={(e) => handleInputChange('cpf', e.target.value)}
                 placeholder="000.000.000-00"
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
@@ -162,7 +162,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 type="date"
                 value={formData.birthDate}
                 onChange={(e) => handleInputChange('birthDate', e.target.value)}
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
               />
             </div>
             
@@ -173,7 +173,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 placeholder="(11) 99999-9999"
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
@@ -185,7 +185,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 placeholder="email@exemplo.com"
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
@@ -196,7 +196,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                 value={formData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 placeholder="Endereço completo"
-                className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
@@ -209,7 +209,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                     value={formData.guardian}
                     onChange={(e) => handleInputChange('guardian', e.target.value)}
                     placeholder="Nome do responsável legal"
-                    className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
                 
@@ -220,7 +220,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                     value={formData.fatherName}
                     onChange={(e) => handleInputChange('fatherName', e.target.value)}
                     placeholder="Nome completo do pai"
-                    className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
                 
@@ -231,7 +231,7 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
                     value={formData.motherName}
                     onChange={(e) => handleInputChange('motherName', e.target.value)}
                     placeholder="Nome completo da mãe"
-                    className="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400"
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
               </>

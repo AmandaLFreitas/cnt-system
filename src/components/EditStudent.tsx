@@ -57,21 +57,21 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
   const isMinor = calculateAge(formData.birthDate) < 18;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <Button variant="outline" onClick={onBack} className="px-3">
+    <div className="space-y-4 md:space-y-6 p-2 md:p-4">
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-y-0 md:space-x-4">
+        <Button variant="outline" onClick={onBack} className="px-3 w-fit">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
         </Button>
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Editar Aluno</h2>
-          <p className="text-gray-600 mt-1">Altere as informações do estudante</p>
+          <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Editar Aluno</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm md:text-base">Altere as informações do estudante</p>
         </div>
       </div>
 
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+          <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
             <User className="h-5 w-5" />
             <span>Informações Pessoais</span>
           </CardTitle>
@@ -79,95 +79,104 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Nome Completo</Label>
+              <Label htmlFor="fullName" className="text-gray-700 dark:text-gray-300">Nome Completo</Label>
               <Input
                 id="fullName"
                 value={formData.fullName}
                 onChange={(e) => handleInputChange('fullName', e.target.value)}
                 placeholder="Nome completo do aluno"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="phone">Telefone</Label>
+              <Label htmlFor="phone" className="text-gray-700 dark:text-gray-300">Telefone</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 placeholder="(11) 99999-9999"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="birthDate">Data de Nascimento</Label>
+              <Label htmlFor="birthDate" className="text-gray-700 dark:text-gray-300">Data de Nascimento</Label>
               <Input
                 id="birthDate"
                 type="date"
                 value={formData.birthDate}
                 onChange={(e) => handleInputChange('birthDate', e.target.value)}
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email (Opcional)</Label>
+              <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email (Opcional)</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email || ''}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 placeholder="email@exemplo.com"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cpf">CPF</Label>
+              <Label htmlFor="cpf" className="text-gray-700 dark:text-gray-300">CPF</Label>
               <Input
                 id="cpf"
                 value={formData.cpf || ''}
                 onChange={(e) => handleInputChange('cpf', e.target.value)}
                 placeholder="000.000.000-00"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Endereço</Label>
+              <Label htmlFor="address" className="text-gray-700 dark:text-gray-300">Endereço</Label>
               <Input
                 id="address"
                 value={formData.address || ''}
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 placeholder="Endereço completo"
+                className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
             {isMinor && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="guardian">Responsável</Label>
+                  <Label htmlFor="guardian" className="text-gray-700 dark:text-gray-300">Responsável</Label>
                   <Input
                     id="guardian"
                     value={formData.guardian || ''}
                     onChange={(e) => handleInputChange('guardian', e.target.value)}
                     placeholder="Nome do responsável legal"
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="fatherName">Nome do Pai</Label>
+                  <Label htmlFor="fatherName" className="text-gray-700 dark:text-gray-300">Nome do Pai</Label>
                   <Input
                     id="fatherName"
                     value={formData.fatherName || ''}
                     onChange={(e) => handleInputChange('fatherName', e.target.value)}
                     placeholder="Nome do pai"
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="motherName">Nome da Mãe</Label>
+                  <Label htmlFor="motherName" className="text-gray-700 dark:text-gray-300">Nome da Mãe</Label>
                   <Input
                     id="motherName"
                     value={formData.motherName || ''}
                     onChange={(e) => handleInputChange('motherName', e.target.value)}
                     placeholder="Nome da mãe"
+                    className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                 </div>
               </>
@@ -176,29 +185,31 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         <CardHeader>
-          <CardTitle>Informações do Curso</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-gray-100">Informações do Curso</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="course">Curso</Label>
+              <Label htmlFor="course" className="text-gray-700 dark:text-gray-300">Curso</Label>
               <Input
                 id="course"
                 value={formData.course}
                 onChange={(e) => handleInputChange('course', e.target.value)}
                 placeholder="Nome do curso"
+                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="courseStartDate">Data de Início do Curso</Label>
+              <Label htmlFor="courseStartDate" className="text-gray-700 dark:text-gray-300">Data de Início do Curso</Label>
               <Input
                 id="courseStartDate"
                 type="date"
                 value={formData.courseStartDate}
                 onChange={(e) => handleInputChange('courseStartDate', e.target.value)}
+                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
               />
             </div>
           </div>
@@ -213,7 +224,7 @@ const EditStudent = ({ student, onBack, onSave }: EditStudentProps) => {
       <div className="flex justify-end">
         <Button 
           onClick={handleSave}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-6 py-2"
         >
           <Save className="mr-2 h-4 w-4" />
           Salvar Alterações
