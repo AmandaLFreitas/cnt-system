@@ -108,6 +108,98 @@ export const mockStudents: Student[] = [
       wednesday: ['wed-15-16', 'wed-16-17'],
       saturday: ['sat-10-12']
     }
+  },
+  {
+    id: '6',
+    fullName: 'Carlos Alberto Pereira',
+    phone: '(11) 94444-4444',
+    birthDate: '1990-01-20',
+    course: 'Informática Básica',
+    courseStartDate: '2024-01-15',
+    schedule: {
+      monday: ['mon-10-11'],
+      wednesday: ['wed-14-15']
+    }
+  },
+  {
+    id: '7',
+    fullName: 'Júlia Fernandes',
+    phone: '(11) 93333-3333',
+    birthDate: '1998-09-12',
+    course: 'Excel Avançado',
+    courseStartDate: '2024-02-01',
+    schedule: {
+      tuesday: ['tue-15-16'],
+      thursday: ['thu-16-17']
+    }
+  },
+  {
+    id: '8',
+    fullName: 'Marcos Vinícius Pereira',
+    phone: '(11) 92222-2222',
+    birthDate: '1987-02-03',
+    course: 'Programação Web',
+    courseStartDate: '2024-01-10',
+    schedule: {
+      saturday: ['sat-08-10']
+    }
+  },
+  {
+    id: '9',
+    fullName: 'Fernanda Souza',
+    phone: '(11) 91111-1111',
+    birthDate: '1993-06-18',
+    course: 'Design Gráfico',
+    courseStartDate: '2024-02-15',
+    schedule: {
+      tuesday: ['tue-08-09'],
+      thursday: ['thu-09-10']
+    }
+  },
+  {
+    id: '10',
+    fullName: 'Beatriz Lima',
+    phone: '(11) 90000-0000',
+    birthDate: '2001-11-01',
+    course: 'Word e PowerPoint',
+    courseStartDate: '2024-03-01',
+    schedule: {
+      monday: ['mon-09-10']
+    }
+  },
+  {
+    id: '11',
+    fullName: 'André Santos',
+    phone: '(11) 98877-6655',
+    birthDate: '1996-04-05',
+    course: 'Excel Avançado',
+    courseStartDate: '2024-02-01',
+    schedule: {
+      tuesday: ['tue-13-14']
+    }
+  },
+  {
+    id: '12',
+    fullName: 'Paula Nogueira',
+    phone: '(11) 97766-5544',
+    birthDate: '1999-08-22',
+    course: 'Informática Básica',
+    courseStartDate: '2024-01-15',
+    schedule: {
+      wednesday: ['wed-15-16']
+    }
+  },
+  {
+    id: '13',
+    fullName: 'Tiago Oliveira',
+    phone: '(11) 96655-4433',
+    birthDate: '1989-12-30',
+    course: 'Programação Web',
+    courseStartDate: '2024-01-10',
+    schedule: {
+      thursday: ['thu-13-14'],
+      saturday: ['sat-10-12']
+    }
   }
 ];
 

@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Save, UserPlus } from 'lucide-react';
+import { ArrowLeft, Save, UserPlus, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCepLookup } from '@/hooks/useCepLookup';
+import { useCpfValidation } from '@/hooks/useCpfValidation';
 import ScheduleSelector from './ScheduleSelector';
 import CourseSelector from './CourseSelector';
 
@@ -17,6 +19,9 @@ interface AddStudentProps {
 
 const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
   const { toast } = useToast();
+  const { loadingCep, cepError, lookupCep } = useCepLookup();
+  const { cpfError, handleCpfChange, validateCpf } = useCpfValidation();
+  const [localCpfError, setLocalCpfError] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     fullName: '',
@@ -30,7 +35,12 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
     courseStartDate: '',
     courseEndDate: '',
     email: '',
-    address: '',
+    cep: '',
+    street: '',
+    number: '',
+    neighborhood: '',
+    city: '',
+    state: '',
     schedule: {} as StudentSchedule
   });
 
@@ -39,6 +49,38 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleCpfInputChange = (value: string) => {
+    const masked = handleCpfChange(value);
+    setFormData(prev => ({
+      ...prev,
+      cpf: masked
+    }));
+  };
+
+  const handleCpfBlur = () => {
+    const isValid = validateCpf(formData.cpf);
+    setLocalCpfError(isValid ? null : 'CPF inválido');
+  };
+
+  const handleCepBlur = async () => {
+    if (!formData.cep) return;
+    
+    const result = await lookupCep(formData.cep);
+    if (result) {
+      setFormData(prev => ({
+        ...prev,
+        street: result.street,
+        neighborhood: result.neighborhood,
+        city: result.city,
+        state: result.state,
+      }));
+      toast({
+        title: "CEP encontrado!",
+        description: "Os dados do endereço foram preenchidos automaticamente.",
+      });
+    }
   };
 
   const handleScheduleChange = (schedule: StudentSchedule) => {
@@ -77,6 +119,17 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
       return;
     }
 
+    // Validar CPF se fornecido
+    if (formData.cpf && !validateCpf(formData.cpf)) {
+      setLocalCpfError('CPF inválido');
+      toast({
+        title: "CPF inválido",
+        description: "Por favor, verifique o CPF informado.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (Object.keys(formData.schedule).length === 0) {
       toast({
         title: "Horário obrigatório",
@@ -96,7 +149,12 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
       schedule: formData.schedule,
       ...(formData.cpf && { cpf: formData.cpf }),
       ...(formData.email && { email: formData.email }),
-      ...(formData.address && { address: formData.address }),
+      ...(formData.cep && { cep: formData.cep }),
+      ...(formData.street && { street: formData.street }),
+      ...(formData.number && { number: formData.number }),
+      ...(formData.neighborhood && { neighborhood: formData.neighborhood }),
+      ...(formData.city && { city: formData.city }),
+      ...(formData.state && { state: formData.state }),
       ...(formData.guardian && { guardian: formData.guardian }),
       ...(formData.fatherName && { fatherName: formData.fatherName }),
       ...(formData.motherName && { motherName: formData.motherName })
@@ -149,10 +207,19 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
               <Input
                 id="cpf"
                 value={formData.cpf}
-                onChange={(e) => handleInputChange('cpf', e.target.value)}
+                onChange={(e) => handleCpfInputChange(e.target.value)}
+                onBlur={handleCpfBlur}
                 placeholder="000.000.000-00"
-                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                className={`bg-white text-gray-900 placeholder-gray-500 ${
+                  localCpfError ? 'border-red-500' : 'border-gray-300'
+                }`}
               />
+              {localCpfError && (
+                <div className="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                  <AlertCircle className="h-4 w-4" />
+                  <span>{localCpfError}</span>
+                </div>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -190,12 +257,75 @@ const AddStudent = ({ onBack, onSave }: AddStudentProps) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="address" className="text-gray-700">Endereço</Label>
+              <Label htmlFor="cep" className="text-gray-700">CEP</Label>
               <Input
-                id="address"
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder="Endereço completo"
+                id="cep"
+                value={formData.cep}
+                onChange={(e) => handleInputChange('cep', e.target.value)}
+                onBlur={handleCepBlur}
+                placeholder="00000-000"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                disabled={loadingCep}
+              />
+              {cepError && (
+                <div className="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                  <AlertCircle className="h-4 w-4" />
+                  <span>{cepError}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="street" className="text-gray-700">Rua</Label>
+              <Input
+                id="street"
+                value={formData.street}
+                onChange={(e) => handleInputChange('street', e.target.value)}
+                placeholder="Nome da rua"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="number" className="text-gray-700">Número</Label>
+              <Input
+                id="number"
+                value={formData.number}
+                onChange={(e) => handleInputChange('number', e.target.value)}
+                placeholder="Número da casa"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="neighborhood" className="text-gray-700">Bairro</Label>
+              <Input
+                id="neighborhood"
+                value={formData.neighborhood}
+                onChange={(e) => handleInputChange('neighborhood', e.target.value)}
+                placeholder="Bairro"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="city" className="text-gray-700">Cidade</Label>
+              <Input
+                id="city"
+                value={formData.city}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+                placeholder="Cidade"
+                className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="state" className="text-gray-700">Estado</Label>
+              <Input
+                id="state"
+                value={formData.state}
+                onChange={(e) => handleInputChange('state', e.target.value)}
+                placeholder="Estado (UF)"
                 className="bg-white border-gray-300 text-gray-900 placeholder-gray-500"
               />
             </div>

@@ -19,7 +19,7 @@ const TimeSlotView = ({ students, onBack, onShowScheduleView }: TimeSlotViewProp
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [courses] = useState(mockCourses);
   
-  const TOTAL_COMPUTERS = 14;
+  const TOTAL_COMPUTERS = 20;
 
   const getDayName = (day: WeekDay) => {
     const dayNames = {

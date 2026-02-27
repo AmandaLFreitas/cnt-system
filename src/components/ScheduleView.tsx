@@ -16,7 +16,7 @@ const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
   const [selectedDay, setSelectedDay] = useState<WeekDay>('monday');
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const [courses] = useState(mockCourses);
-  const TOTAL_COMPUTERS = 14;
+  const TOTAL_COMPUTERS = 20;
 
   const getDayName = (day: WeekDay) => {
     const dayNames = {

@@ -230,10 +230,17 @@ const StudentDetails = ({ student, onBack, onEdit, onCompleteStudent }: StudentD
               </div>
             )}
 
-            {student.address && (
-              <div>
+            {(student.cep || student.street || student.number || student.neighborhood || student.city || student.state) && (
+              <div className="lg:col-span-2">
                 <label className="text-sm font-medium text-gray-600">Endereço</label>
-                <p className="text-lg font-semibold text-gray-900">{student.address}</p>
+                <div className="bg-gray-50 p-3 rounded space-y-1">
+                  {student.cep && <p className="text-sm text-gray-900">CEP: {student.cep}</p>}
+                  {student.street && <p className="text-sm text-gray-900">Rua: {student.street}</p>}
+                  {student.number && <p className="text-sm text-gray-900">Número: {student.number}</p>}
+                  {student.neighborhood && <p className="text-sm text-gray-900">Bairro: {student.neighborhood}</p>}
+                  {student.city && <p className="text-sm text-gray-900">Cidade: {student.city}</p>}
+                  {student.state && <p className="text-sm text-gray-900">Estado: {student.state}</p>}
+                </div>
               </div>
             )}
             

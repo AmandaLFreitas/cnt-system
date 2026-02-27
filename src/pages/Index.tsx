@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Student } from '../types';
 import { mockStudents } from '../data/mockData';
 import StudentList from '../components/StudentList';
@@ -11,15 +11,58 @@ import ScheduleView from '../components/ScheduleView';
 import Reports from '../components/Reports';
 import AddStudent from '../components/AddStudent';
 import CompletedStudents from '../components/CompletedStudents';
+import ManageVacancies from '../components/ManageVacancies';
 import { GraduationCap, Users, Calendar, BarChart3, UserPlus, Award } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useStudents } from '@/api/hooks/students';
+import { useCourses } from '@/api/hooks/courses';
+import { useCreateStudent, useUpdateStudent } from '@/api/hooks/students.mutations';
 
-type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'scheduleView' | 'reports' | 'add' | 'completed';
+type View = 'list' | 'attendance' | 'frequency' | 'details' | 'edit' | 'timeSlots' | 'scheduleView' | 'reports' | 'add' | 'completed' | 'vacancies';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('list');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [students, setStudents] = useState<Student[]>(mockStudents);
+  const { data: studentsApi, isLoading, error } = useStudents();
+  const { data: coursesApi } = useCourses();
+  const createStudentMutation = useCreateStudent();
+  const updateStudentMutation = useUpdateStudent();
+  const [students, setStudents] = useState<Student[]>([]);
+  useEffect(() => {
+    if (studentsApi && studentsApi.length > 0) {
+      const mapped: Student[] = studentsApi.map((s: any) => {
+        const scheduleParsed = s.schedule ? (typeof s.schedule === 'string' ? JSON.parse(s.schedule) : s.schedule) : {};
+        const birth = typeof s.birthDate === 'string' ? s.birthDate.slice(0,10) : new Date(s.birthDate).toISOString().slice(0,10);
+        return {
+          id: s.id,
+          fullName: s.fullName,
+          cpf: s.cpf,
+          guardian: s.guardian,
+          fatherName: s.fatherName,
+          motherName: s.motherName,
+          phone: s.phone ?? '',
+          birthDate: birth,
+          course: s.course?.name ?? 'Sem curso',
+          courseId: s.courseId ?? s.course?.id ?? null,
+          courseStartDate: s.courseStartDate ? String(s.courseStartDate).slice(0,10) : undefined,
+          courseEndDate: s.courseEndDate ? String(s.courseEndDate).slice(0,10) : undefined,
+          email: s.email,
+          cep: s.cep,
+          street: s.street,
+          number: s.number,
+          neighborhood: s.neighborhood,
+          city: s.city,
+          state: s.state,
+          schedule: scheduleParsed,
+          isCompleted: s.isCompleted ?? false,
+          completionDate: s.completionDate,
+        } as Student;
+      });
+      setStudents(mapped);
+    } else {
+      setStudents([]);
+    }
+  }, [studentsApi]);
   const { toast } = useToast();
 
   // Filtrar apenas alunos ativos (não finalizados) para as operações normais
@@ -41,8 +84,40 @@ const Index = () => {
   };
 
   const handleSaveStudent = (updatedStudent: Student) => {
-    setStudents(prev => prev.map(s => s.id === updatedStudent.id ? updatedStudent : s));
-    setCurrentView('details');
+    const courseId = coursesApi?.find((c: any) => c.name === updatedStudent.course)?.id;
+    updateStudentMutation.mutate({
+      id: updatedStudent.id,
+      payload: {
+        student: {
+          fullName: updatedStudent.fullName,
+          phone: updatedStudent.phone,
+          birthDate: updatedStudent.birthDate,
+          courseStartDate: updatedStudent.courseStartDate,
+          courseEndDate: updatedStudent.courseEndDate,
+          schedule: updatedStudent.schedule ? JSON.stringify(updatedStudent.schedule) : undefined,
+          email: updatedStudent.email,
+          cpf: updatedStudent.cpf,
+          guardian: updatedStudent.guardian,
+          fatherName: updatedStudent.fatherName,
+          motherName: updatedStudent.motherName,
+          cep: updatedStudent.cep,
+          street: updatedStudent.street,
+          number: updatedStudent.number,
+          neighborhood: updatedStudent.neighborhood,
+          city: updatedStudent.city,
+          state: updatedStudent.state,
+        },
+        courseId,
+      },
+    }, {
+      onSuccess: () => {
+        setCurrentView('details');
+      },
+      onError: () => {
+        setStudents(prev => prev.map(s => s.id === updatedStudent.id ? updatedStudent : s));
+        setCurrentView('details');
+      }
+    });
   };
 
   const handleCompleteStudent = (student: Student) => {
@@ -62,8 +137,41 @@ const Index = () => {
   };
 
   const handleAddStudent = (newStudent: Student) => {
-    setStudents(prev => [...prev, newStudent]);
-    setCurrentView('list');
+    const courseId = coursesApi?.find((c: any) => c.name === newStudent.course)?.id;
+    if (!courseId) {
+      toast({ title: 'Curso não encontrado', description: 'Cadastre os cursos no sistema antes de adicionar alunos.', variant: 'destructive' });
+      return;
+    }
+    createStudentMutation.mutate({
+      student: {
+        fullName: newStudent.fullName,
+        phone: newStudent.phone,
+        birthDate: newStudent.birthDate,
+        courseStartDate: newStudent.courseStartDate,
+        courseEndDate: newStudent.courseEndDate,
+        schedule: newStudent.schedule ? JSON.stringify(newStudent.schedule) : undefined,
+        email: newStudent.email,
+        cpf: newStudent.cpf,
+        guardian: newStudent.guardian,
+        fatherName: newStudent.fatherName,
+        motherName: newStudent.motherName,
+        cep: newStudent.cep,
+        street: newStudent.street,
+        number: newStudent.number,
+        neighborhood: newStudent.neighborhood,
+        city: newStudent.city,
+        state: newStudent.state,
+      },
+      courseId,
+    }, {
+      onSuccess: () => {
+        setCurrentView('list');
+      },
+      onError: () => {
+        setStudents(prev => [...prev, newStudent]);
+        setCurrentView('list');
+      }
+    });
   };
 
   const handleShowAttendance = () => {
@@ -90,6 +198,10 @@ const Index = () => {
     setCurrentView('completed');
   };
 
+  const handleShowVacancies = () => {
+    setCurrentView('vacancies');
+  };
+
   const handleBack = () => {
     setCurrentView('list');
     setSelectedStudent(null);
@@ -104,6 +216,7 @@ const Index = () => {
     if (view === 'attendance') return currentView === 'attendance' || currentView === 'timeSlots' || currentView === 'scheduleView';
     if (view === 'reports') return currentView === 'reports';
     if (view === 'completed') return currentView === 'completed';
+    if (view === 'vacancies') return currentView === 'vacancies';
     return false;
   };
 
@@ -170,6 +283,17 @@ const Index = () => {
                   <span>Alunos Finalizados</span>
                 </button>
                 <button
+                  onClick={handleShowVacancies}
+                  className={`flex items-center space-x-2 text-sm px-3 py-2 rounded-md transition-colors ${
+                    isNavActive('vacancies') 
+                      ? 'bg-purple-100 text-purple-700 font-medium' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Gerenciar Vagas</span>
+                </button>
+                <button
                   onClick={handleShowAddStudent}
                   className="flex items-center space-x-2 text-sm px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
                 >
@@ -215,6 +339,17 @@ const Index = () => {
               >
                 <BarChart3 className="h-4 w-4" />
                 <span>Relatórios</span>
+              </button>
+              <button
+                onClick={handleShowVacancies}
+                className={`flex items-center justify-center space-x-1 text-xs px-2 py-2 rounded-md transition-colors ${
+                  isNavActive('vacancies') 
+                    ? 'bg-purple-100 text-purple-700 font-medium' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Users className="h-4 w-4" />
+                <span>Vagas</span>
               </button>
               <button
                 onClick={handleShowAddStudent}
@@ -281,6 +416,12 @@ const Index = () => {
             students={students}
             onBack={handleBack}
             onShowDetails={handleShowDetails}
+          />
+        )}
+
+        {currentView === 'vacancies' && (
+          <ManageVacancies
+            onBack={handleBack}
           />
         )}
         

@@ -9,10 +9,18 @@ export interface Student {
   phone: string;
   birthDate: string;
   course: string;
-  courseStartDate: string;
+  courseId?: string | null;
+  course?: Course | null;
+  courseStartDate?: string;
+  courseEndDate?: string;
   email?: string;
-  address?: string;
-  schedule: StudentSchedule; // Horário específico do aluno
+  cep?: string;
+  street?: string;
+  number?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  schedule?: StudentSchedule | string; // Horário específico do aluno (object or JSON string from backend)
   isCompleted?: boolean; // Se o curso foi finalizado
   completionDate?: string; // Data de finalização do curso
 }
@@ -42,6 +50,16 @@ export interface Course {
   totalHours: number;
   startDate: string;
   endDate: string;
+}
+
+export interface TimeSlotCapacity {
+  id: string;
+  slotId: string;
+  day: string;
+  time: string;
+  totalVacancies: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Horários disponíveis por dia

@@ -25,7 +25,7 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
   const { toast } = useToast();
 
   const today = new Date().toISOString().split('T')[0];
-  const TOTAL_COMPUTERS = 14;
+  const TOTAL_COMPUTERS = 20;
 
   const getDayName = (day: WeekDay) => {
     const dayNames = {
