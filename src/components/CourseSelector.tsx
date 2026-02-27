@@ -128,7 +128,6 @@ const CourseSelector = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Toggle para tipo de curso */}
         <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
           <Label htmlFor="course-type" className="text-sm font-medium text-gray-900">
             Curso pré-cadastrado
@@ -145,7 +144,6 @@ const CourseSelector = ({
         </div>
 
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-          {/* Seleção ou entrada do curso */}
           {isManualCourse ? (
             <>
               <div className="space-y-2">

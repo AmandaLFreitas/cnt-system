@@ -1,4 +1,4 @@
-import { fetchJson } from './client';
+import { fetchJson, toIsoDateTime } from './client';
 
 type ApiCourse = { id: string; name: string; totalHours: number; startDate: string; endDate: string };
 type ApiStudent = {
@@ -57,10 +57,7 @@ export async function createStudent(payload: {
   const data: any = {
     fullName: payload.student.fullName,
     phone: payload.student.phone,
-    // Converter data para ISO-8601 DateTime se for apenas DATE
-    birthDate: payload.student.birthDate.includes('T') 
-      ? payload.student.birthDate 
-      : `${payload.student.birthDate}T00:00:00Z`,
+    birthDate: toIsoDateTime(payload.student.birthDate),
     courseId: payload.courseId,
   };
 
@@ -69,8 +66,8 @@ export async function createStudent(payload: {
   if (payload.student.guardian) data.guardian = payload.student.guardian;
   if (payload.student.fatherName) data.fatherName = payload.student.fatherName;
   if (payload.student.motherName) data.motherName = payload.student.motherName;
-  if (payload.student.courseStartDate) data.courseStartDate = payload.student.courseStartDate.includes('T') ? payload.student.courseStartDate : `${payload.student.courseStartDate}T00:00:00Z`;
-  if (payload.student.courseEndDate) data.courseEndDate = payload.student.courseEndDate.includes('T') ? payload.student.courseEndDate : `${payload.student.courseEndDate}T00:00:00Z`;
+  if (payload.student.courseStartDate) data.courseStartDate = toIsoDateTime(payload.student.courseStartDate);
+  if (payload.student.courseEndDate) data.courseEndDate = toIsoDateTime(payload.student.courseEndDate);
   if (payload.student.schedule) data.schedule = payload.student.schedule;
   if (payload.student.email) data.email = payload.student.email;
   if (payload.student.address) data.address = payload.student.address;
@@ -111,20 +108,9 @@ export async function updateStudent(id: string, payload: {
     ...payload.student,
   };
   
-  // Converter birthDate para ISO-8601 DateTime se necessário
-  if (data.birthDate && !data.birthDate.includes('T')) {
-    data.birthDate = `${data.birthDate}T00:00:00Z`;
-  }
-  
-  // Converter courseStartDate para ISO-8601 DateTime se necessário
-  if (data.courseStartDate && !data.courseStartDate.includes('T')) {
-    data.courseStartDate = `${data.courseStartDate}T00:00:00Z`;
-  }
-  
-  // Converter courseEndDate para ISO-8601 DateTime se necessário
-  if (data.courseEndDate && !data.courseEndDate.includes('T')) {
-    data.courseEndDate = `${data.courseEndDate}T00:00:00Z`;
-  }
+  if (data.birthDate) data.birthDate = toIsoDateTime(data.birthDate);
+  if (data.courseStartDate) data.courseStartDate = toIsoDateTime(data.courseStartDate);
+  if (data.courseEndDate) data.courseEndDate = toIsoDateTime(data.courseEndDate);
   
   if (payload.courseId) {
     data.courseId = payload.courseId;

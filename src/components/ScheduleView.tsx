@@ -145,7 +145,6 @@ const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
         </div>
       </div>
 
-      {/* Resumo Geral */}
       <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -176,7 +175,6 @@ const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
       </Card>
 
       {viewMode === 'week' ? (
-        /* Visão Semanal - Ocupação por Dia */
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -241,7 +239,6 @@ const ScheduleView = ({ students, onBack }: ScheduleViewProps) => {
           </CardContent>
         </Card>
       ) : (
-        /* Visão Diária - Detalhes por Horário */
         <>
           <Card>
             <CardHeader>

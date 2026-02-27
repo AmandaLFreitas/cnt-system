@@ -150,7 +150,6 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
         </div>
       </div>
 
-      {/* Seleção de Dia e Horário */}
       <Card className="dark:bg-gray-800 dark:border-gray-700">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
@@ -204,7 +203,6 @@ const AttendanceSheet = ({ onBack, onShowScheduleView }: AttendanceSheetProps) =
         </CardContent>
       </Card>
 
-      {/* Informações de Vagas */}
       {selectedTimeSlot && (
         <Card className="bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-700">
           <CardContent className="pt-6">

@@ -137,7 +137,6 @@ const StudentFrequency = ({ student, onBack }: StudentFrequencyProps) => {
         </div>
       </div>
 
-      {/* Informações do Aluno */}
       <Card className="border-blue-200 bg-blue-50">
         <CardHeader>
           <div className="flex items-center space-x-4">
@@ -153,7 +152,6 @@ const StudentFrequency = ({ student, onBack }: StudentFrequencyProps) => {
         </CardHeader>
       </Card>
 
-      {/* Filtro por Mês */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -181,7 +179,6 @@ const StudentFrequency = ({ student, onBack }: StudentFrequencyProps) => {
         </CardContent>
       </Card>
 
-      {/* Estatísticas do Período Selecionado */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardContent className="pt-6">
@@ -232,7 +229,6 @@ const StudentFrequency = ({ student, onBack }: StudentFrequencyProps) => {
         </Card>
       </div>
 
-      {/* Progresso do Curso */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -288,7 +284,6 @@ const StudentFrequency = ({ student, onBack }: StudentFrequencyProps) => {
         </Card>
       </div>
 
-      {/* Relatório Mensal */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -348,7 +343,6 @@ const StudentFrequency = ({ student, onBack }: StudentFrequencyProps) => {
         </CardContent>
       </Card>
 
-      {/* Histórico de Presença */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">

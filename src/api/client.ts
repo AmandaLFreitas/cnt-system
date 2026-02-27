@@ -10,3 +10,8 @@ export async function fetchJson<T>(input: RequestInfo, init?: RequestInit): Prom
   return res.json();
 }
 
+export function toIsoDateTime(date: string | undefined | null): string | undefined {
+  if (!date) return undefined;
+  return date.includes('T') ? date : `${date}T00:00:00Z`;
+}
+

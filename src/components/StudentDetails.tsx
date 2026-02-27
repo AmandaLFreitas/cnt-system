@@ -171,7 +171,6 @@ const StudentDetails = ({ student, onBack, onEdit, onCompleteStudent }: StudentD
         </div>
       </div>
 
-      {/* Status do Curso */}
       {student.isCompleted && (
         <Card className="border-green-200 bg-green-50">
           <CardContent className="pt-4">
@@ -186,7 +185,6 @@ const StudentDetails = ({ student, onBack, onEdit, onCompleteStudent }: StudentD
         </Card>
       )}
 
-      {/* Informações Pessoais */}
       <Card className="border-blue-200 bg-blue-50">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -278,7 +276,6 @@ const StudentDetails = ({ student, onBack, onEdit, onCompleteStudent }: StudentD
         </CardContent>
       </Card>
 
-      {/* Informações do Curso */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
@@ -353,7 +350,6 @@ const StudentDetails = ({ student, onBack, onEdit, onCompleteStudent }: StudentD
         </CardContent>
       </Card>
 
-      {/* Horários de Aula */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">

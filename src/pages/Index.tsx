@@ -29,39 +29,39 @@ const Index = () => {
   const updateStudentMutation = useUpdateStudent();
   const [students, setStudents] = useState<Student[]>([]);
   useEffect(() => {
-    if (studentsApi && studentsApi.length > 0) {
-      const mapped: Student[] = studentsApi.map((s: any) => {
-        const scheduleParsed = s.schedule ? (typeof s.schedule === 'string' ? JSON.parse(s.schedule) : s.schedule) : {};
-        const birth = typeof s.birthDate === 'string' ? s.birthDate.slice(0,10) : new Date(s.birthDate).toISOString().slice(0,10);
-        return {
-          id: s.id,
-          fullName: s.fullName,
-          cpf: s.cpf,
-          guardian: s.guardian,
-          fatherName: s.fatherName,
-          motherName: s.motherName,
-          phone: s.phone ?? '',
-          birthDate: birth,
-          course: s.course?.name ?? 'Sem curso',
-          courseId: s.courseId ?? s.course?.id ?? null,
-          courseStartDate: s.courseStartDate ? String(s.courseStartDate).slice(0,10) : undefined,
-          courseEndDate: s.courseEndDate ? String(s.courseEndDate).slice(0,10) : undefined,
-          email: s.email,
-          cep: s.cep,
-          street: s.street,
-          number: s.number,
-          neighborhood: s.neighborhood,
-          city: s.city,
-          state: s.state,
-          schedule: scheduleParsed,
-          isCompleted: s.isCompleted ?? false,
-          completionDate: s.completionDate,
-        } as Student;
-      });
-      setStudents(mapped);
-    } else {
+    if (!studentsApi || studentsApi.length === 0) {
       setStudents([]);
+      return;
     }
+    const normalized: Student[] = studentsApi.map((apiStudent: any) => {
+      const parsedSchedule = apiStudent.schedule ? (typeof apiStudent.schedule === 'string' ? JSON.parse(apiStudent.schedule) : apiStudent.schedule) : {};
+      const birth = typeof apiStudent.birthDate === 'string' ? apiStudent.birthDate.slice(0, 10) : new Date(apiStudent.birthDate).toISOString().slice(0, 10);
+      return {
+        id: apiStudent.id,
+        fullName: apiStudent.fullName,
+        cpf: apiStudent.cpf,
+        guardian: apiStudent.guardian,
+        fatherName: apiStudent.fatherName,
+        motherName: apiStudent.motherName,
+        phone: apiStudent.phone ?? '',
+        birthDate: birth,
+        course: apiStudent.course?.name ?? 'Sem curso',
+        courseId: apiStudent.courseId ?? apiStudent.course?.id ?? null,
+        courseStartDate: apiStudent.courseStartDate ? String(apiStudent.courseStartDate).slice(0, 10) : undefined,
+        courseEndDate: apiStudent.courseEndDate ? String(apiStudent.courseEndDate).slice(0, 10) : undefined,
+        email: apiStudent.email,
+        cep: apiStudent.cep,
+        street: apiStudent.street,
+        number: apiStudent.number,
+        neighborhood: apiStudent.neighborhood,
+        city: apiStudent.city,
+        state: apiStudent.state,
+        schedule: parsedSchedule,
+        isCompleted: apiStudent.isCompleted ?? false,
+        completionDate: apiStudent.completionDate,
+      } as Student;
+    });
+    setStudents(normalized);
   }, [studentsApi]);
   const { toast } = useToast();
 
@@ -222,7 +222,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -304,7 +303,6 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Mobile Navigation */}
           <div className="md:hidden border-t border-gray-200 pt-2 pb-3">
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -363,7 +361,6 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
         {currentView === 'list' && (
           <StudentList 
@@ -450,7 +447,6 @@ const Index = () => {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-600">
