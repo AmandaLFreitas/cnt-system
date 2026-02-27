@@ -1,0 +1,1012 @@
+[
+  {
+    "table": "_prisma_migrations",
+    "structure": [
+      {
+        "cid": "0",
+        "name": "id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": true
+      },
+      {
+        "cid": "1",
+        "name": "checksum",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "2",
+        "name": "finished_at",
+        "type": "DATETIME",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "3",
+        "name": "migration_name",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "4",
+        "name": "logs",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "5",
+        "name": "rolled_back_at",
+        "type": "DATETIME",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "6",
+        "name": "started_at",
+        "type": "DATETIME",
+        "notnull": true,
+        "dflt_value": "current_timestamp",
+        "pk": false
+      },
+      {
+        "cid": "7",
+        "name": "applied_steps_count",
+        "type": "INTEGER UNSIGNED",
+        "notnull": true,
+        "dflt_value": "0",
+        "pk": false
+      }
+    ],
+    "rows": [
+      {
+        "id": "83234bd6-3800-498d-adba-fd091d9a3729",
+        "checksum": "d7b83364c9f96fba538bc1ea3c0924add89d2a141546eee3527db77031009c6c",
+        "finished_at": "2026-02-27T13:26:04.077Z",
+        "migration_name": "20251220233658_init_sqlite",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:26:04.061Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "2c1b972b-dde9-4f62-8b22-2cecde81917d",
+        "checksum": "eef2ab81ef75728cf623731770ebf216d58799754cad698b11bca88930aaeee5",
+        "finished_at": "2026-02-27T13:26:04.085Z",
+        "migration_name": "20260220_add_cep_field",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:26:04.079Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "6a415fff-3c47-4701-b706-fb1d21b468dc",
+        "checksum": "c6dc58d01ca1a1d84c69f65fe64c897f3ec9b1b02a97eedf9280e406fadea82d",
+        "finished_at": "2026-02-27T13:26:04.092Z",
+        "migration_name": "20260220_fix_birthdate_format",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:26:04.087Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "edb743a5-a092-4c95-90fa-57e794aee290",
+        "checksum": "be26f55a13078192880b8fe2e939c55662705d055f71effdecd0147c9baaa24b",
+        "finished_at": "2026-02-27T13:26:04.098Z",
+        "migration_name": "20260220_normalize_birthdate_iso",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:26:04.094Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "d36b7577-a2dc-4a02-9f8b-e530b53bca65",
+        "checksum": "775a3e992d361c3061f6d760382cd5426cae81000c0accc8e3f8dba8edd28a73",
+        "finished_at": "2026-02-27T13:26:04.108Z",
+        "migration_name": "20260220_rename_adress_to_address",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:26:04.100Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "338b3530-66b2-483c-acb7-cba4f98c318b",
+        "checksum": "a127ff4dd58791879c9a4bfb6c40cc4df81e6312eb1f66e1982d3e4ed10e6c1d",
+        "finished_at": "2026-02-27T13:26:04.116Z",
+        "migration_name": "20260226_add_fk_indexes",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:26:04.109Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "b191c110-6359-429a-a9e1-37c4a4d6ae23",
+        "checksum": "74c2fa89a3ac950e239d6d05eb5ddf41d82d540ab254d90d854073f117da1015",
+        "finished_at": "2026-02-27T13:26:25.421Z",
+        "migration_name": "20260227132625_add_address_detail_fields",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:26:25.388Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "57c11046-3506-4f40-b1e7-5081062f5dba",
+        "checksum": "f265030ccd4d78373ab78bad3232d31510a48bf76b9b172f63019e176e8cee56",
+        "finished_at": "2026-02-27T13:42:39.057Z",
+        "migration_name": "20260227134239_add_time_slot_capacity",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T13:42:39.022Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "653498da-f779-45a4-8fa0-10216fdadc01",
+        "checksum": "8a4ead42e42d6b8e66c2cf35c82465c2d45df9223b7b78e710537180b994a75c",
+        "finished_at": "2026-02-27T14:11:13.769Z",
+        "migration_name": "20260227141113_remove_address_field",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T14:11:13.694Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "1c330b04-a416-4b4f-a77d-d242b63df92d",
+        "checksum": "83d25c24dafda8308cd2f979d4e910e7e43c29ff3f642ebeaab3b6fb5904c727",
+        "finished_at": "2026-02-27T14:20:10.145Z",
+        "migration_name": "20260227142010_add_course_start_date",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T14:20:10.093Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "21f91c2c-7fc3-4a38-a562-ca883b986cc5",
+        "checksum": "e455a752ffc96fa95c8bbc09bf0417a6058b981c223702717be4308f66cbd482",
+        "finished_at": "2026-02-27T16:34:39.591Z",
+        "migration_name": "20260227144000_add_course_end_date",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T16:34:39.557Z",
+        "applied_steps_count": "1"
+      },
+      {
+        "id": "f493e107-733a-4b22-9201-93718607de50",
+        "checksum": "589f73a195635c1d319040ba1d64d777bd26b0873f444d89cc2a574c0f6ea2f8",
+        "finished_at": "2026-02-27T16:34:39.614Z",
+        "migration_name": "20260227144100_add_schedule_field",
+        "logs": null,
+        "rolled_back_at": null,
+        "started_at": "2026-02-27T16:34:39.596Z",
+        "applied_steps_count": "1"
+      }
+    ]
+  },
+  {
+    "table": "attendance_records",
+    "structure": [
+      {
+        "cid": "0",
+        "name": "id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": true
+      },
+      {
+        "cid": "1",
+        "name": "student_id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "2",
+        "name": "date",
+        "type": "DATETIME",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "3",
+        "name": "status",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "4",
+        "name": "class_hours",
+        "type": "INTEGER",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      }
+    ],
+    "rows": []
+  },
+  {
+    "table": "courses",
+    "structure": [
+      {
+        "cid": "0",
+        "name": "id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": true
+      },
+      {
+        "cid": "1",
+        "name": "name",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "2",
+        "name": "totalHours",
+        "type": "INTEGER",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "3",
+        "name": "start_date",
+        "type": "DATETIME",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "4",
+        "name": "end_date",
+        "type": "DATETIME",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      }
+    ],
+    "rows": [
+      {
+        "id": "cmm4xfbay0000v9eccm39diat",
+        "name": "Informática Básica",
+        "totalHours": 80,
+        "start_date": "2024-01-15T00:00:00.000Z",
+        "end_date": "2024-04-15T23:59:59.000Z"
+      },
+      {
+        "id": "cmm4xfbbr0001v9ec6pphzm8x",
+        "name": "Excel Avançado",
+        "totalHours": 60,
+        "start_date": "2024-02-01T00:00:00.000Z",
+        "end_date": "2024-05-01T23:59:59.000Z"
+      },
+      {
+        "id": "cmm4xfbc00002v9eceb2ufexp",
+        "name": "Word e PowerPoint",
+        "totalHours": 40,
+        "start_date": "2024-03-01T00:00:00.000Z",
+        "end_date": "2024-06-01T23:59:59.000Z"
+      },
+      {
+        "id": "cmm4xfbcf0003v9eci7yq6osz",
+        "name": "Programação Web",
+        "totalHours": 120,
+        "start_date": "2024-01-10T00:00:00.000Z",
+        "end_date": "2024-07-10T23:59:59.000Z"
+      },
+      {
+        "id": "cmm4xfbcq0004v9ecl4ufqxkh",
+        "name": "Design Gráfico",
+        "totalHours": 100,
+        "start_date": "2024-02-15T00:00:00.000Z",
+        "end_date": "2024-08-15T23:59:59.000Z"
+      }
+    ]
+  },
+  {
+    "table": "students",
+    "structure": [
+      {
+        "cid": "0",
+        "name": "id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": true
+      },
+      {
+        "cid": "1",
+        "name": "full_name",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "2",
+        "name": "cpf",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "3",
+        "name": "guardian",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "4",
+        "name": "father_name",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "5",
+        "name": "mother_name",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "6",
+        "name": "phone",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "7",
+        "name": "birth_date",
+        "type": "DATETIME",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "8",
+        "name": "course_id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "9",
+        "name": "email",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "10",
+        "name": "cep",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "11",
+        "name": "street",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "12",
+        "name": "number",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "13",
+        "name": "neighborhood",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "14",
+        "name": "city",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "15",
+        "name": "state",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "16",
+        "name": "is_completed",
+        "type": "BOOLEAN",
+        "notnull": true,
+        "dflt_value": "false",
+        "pk": false
+      },
+      {
+        "cid": "17",
+        "name": "completion_date",
+        "type": "DATETIME",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "18",
+        "name": "course_start_date",
+        "type": "DATETIME",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "19",
+        "name": "course_end_date",
+        "type": "DATETIME",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "20",
+        "name": "schedule",
+        "type": "TEXT",
+        "notnull": false,
+        "dflt_value": null,
+        "pk": false
+      }
+    ],
+    "rows": [
+      {
+        "id": "cmm4xfbd00005v9ecll2g52k5",
+        "full_name": "João Silva Santos",
+        "cpf": null,
+        "guardian": null,
+        "father_name": null,
+        "mother_name": null,
+        "phone": "(11) 99999-9999",
+        "birth_date": "1995-03-15T00:00:00.000Z",
+        "course_id": "cmm4xfbay0000v9eccm39diat",
+        "email": null,
+        "cep": "01001-000",
+        "street": "Praca da Se",
+        "number": "100",
+        "neighborhood": "Se",
+        "city": "Sao Paulo",
+        "state": "SP",
+        "is_completed": false,
+        "completion_date": null,
+        "course_start_date": "2024-04-01T00:00:00.000Z",
+        "course_end_date": null,
+        "schedule": "{\"monday\":[\"mon-09-10\",\"mon-10-11\"],\"wednesday\":[\"wed-14-15\"]}"
+      },
+      {
+        "id": "cmm4xfbdf0006v9eckowldch8",
+        "full_name": "Maria Oliveira Costa",
+        "cpf": null,
+        "guardian": null,
+        "father_name": null,
+        "mother_name": null,
+        "phone": "(11) 98888-8888",
+        "birth_date": "1988-07-22T00:00:00.000Z",
+        "course_id": "cmm4xfbbr0001v9ec6pphzm8x",
+        "email": null,
+        "cep": null,
+        "street": null,
+        "number": null,
+        "neighborhood": null,
+        "city": null,
+        "state": null,
+        "is_completed": false,
+        "completion_date": null,
+        "course_start_date": null,
+        "course_end_date": null,
+        "schedule": null
+      },
+      {
+        "id": "cmm4xfbdu0007v9ecukwsu7sv",
+        "full_name": "Pedro Mendes Lima",
+        "cpf": null,
+        "guardian": "Carlos Mendes",
+        "father_name": "Carlos Mendes Lima",
+        "mother_name": "Ana Paula Mendes",
+        "phone": "(11) 97777-7777",
+        "birth_date": "2010-12-10T00:00:00.000Z",
+        "course_id": "cmm4xfbc00002v9eceb2ufexp",
+        "email": null,
+        "cep": null,
+        "street": null,
+        "number": null,
+        "neighborhood": null,
+        "city": null,
+        "state": null,
+        "is_completed": false,
+        "completion_date": null,
+        "course_start_date": null,
+        "course_end_date": null,
+        "schedule": null
+      },
+      {
+        "id": "cmm4xfbe90008v9ecvzcj9auj",
+        "full_name": "Ana Carolina Souza",
+        "cpf": null,
+        "guardian": null,
+        "father_name": null,
+        "mother_name": null,
+        "phone": "(11) 96666-6666",
+        "birth_date": "1992-05-08T00:00:00.000Z",
+        "course_id": "cmm4xfbcf0003v9eci7yq6osz",
+        "email": "ana.souza@email.com",
+        "cep": null,
+        "street": null,
+        "number": null,
+        "neighborhood": null,
+        "city": null,
+        "state": null,
+        "is_completed": false,
+        "completion_date": null,
+        "course_start_date": null,
+        "course_end_date": null,
+        "schedule": null
+      },
+      {
+        "id": "cmm4xfbek0009v9echburgixg",
+        "full_name": "Roberto da Silva",
+        "cpf": "123.456.789-10",
+        "guardian": null,
+        "father_name": null,
+        "mother_name": null,
+        "phone": "(11) 95555-5555",
+        "birth_date": "1985-11-30T00:00:00.000Z",
+        "course_id": "cmm4xfbcq0004v9ecl4ufqxkh",
+        "email": null,
+        "cep": null,
+        "street": null,
+        "number": null,
+        "neighborhood": null,
+        "city": null,
+        "state": null,
+        "is_completed": false,
+        "completion_date": null,
+        "course_start_date": null,
+        "course_end_date": null,
+        "schedule": null
+      },
+      {
+        "id": "cmm4ypfqb0002v948t3ldjjrn",
+        "full_name": "Amanda",
+        "cpf": "138.414.459-50",
+        "guardian": null,
+        "father_name": null,
+        "mother_name": null,
+        "phone": "45984182593",
+        "birth_date": "2006-03-13T00:00:00.000Z",
+        "course_id": "cmm4xfbay0000v9eccm39diat",
+        "email": "freitasamandalais@gmail.com",
+        "cep": "85908-100",
+        "street": "Rua Bento Gonçalves",
+        "number": "526",
+        "neighborhood": "Jardim Europa",
+        "city": "Toledo",
+        "state": "PR",
+        "is_completed": false,
+        "completion_date": null,
+        "course_start_date": null,
+        "course_end_date": null,
+        "schedule": null
+      }
+    ]
+  },
+  {
+    "table": "time_slot_capacities",
+    "structure": [
+      {
+        "cid": "0",
+        "name": "id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": true
+      },
+      {
+        "cid": "1",
+        "name": "slot_id",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "2",
+        "name": "day",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "3",
+        "name": "time",
+        "type": "TEXT",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "4",
+        "name": "total_vacancies",
+        "type": "INTEGER",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      },
+      {
+        "cid": "5",
+        "name": "created_at",
+        "type": "DATETIME",
+        "notnull": true,
+        "dflt_value": "CURRENT_TIMESTAMP",
+        "pk": false
+      },
+      {
+        "cid": "6",
+        "name": "updated_at",
+        "type": "DATETIME",
+        "notnull": true,
+        "dflt_value": null,
+        "pk": false
+      }
+    ],
+    "rows": [
+      {
+        "id": "cmm548oo30000v9wcfygnn8c9",
+        "slot_id": "mon-08-09",
+        "day": "monday",
+        "time": "08:00 - 09:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.068Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ooo0001v9wct8nq0llx",
+        "slot_id": "mon-09-10",
+        "day": "monday",
+        "time": "09:00 - 10:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.089Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548op00002v9wcfyj2qo8b",
+        "slot_id": "mon-10-11",
+        "day": "monday",
+        "time": "10:00 - 11:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.100Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548opg0003v9wczloqm8de",
+        "slot_id": "mon-13-14",
+        "day": "monday",
+        "time": "13:00 - 14:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.116Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548opt0004v9wcjg3hx1pl",
+        "slot_id": "mon-14-15",
+        "day": "monday",
+        "time": "14:00 - 15:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.130Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oq40005v9wckcvxve9t",
+        "slot_id": "mon-15-16",
+        "day": "monday",
+        "time": "15:00 - 16:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.140Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oqd0006v9wcien0bu1z",
+        "slot_id": "mon-16-17",
+        "day": "monday",
+        "time": "16:00 - 17:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.149Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oql0007v9wchat0cmgx",
+        "slot_id": "tue-08-09",
+        "day": "tuesday",
+        "time": "08:00 - 09:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.157Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oqx0008v9wcwyzzivl5",
+        "slot_id": "tue-09-10",
+        "day": "tuesday",
+        "time": "09:00 - 10:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.169Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548org0009v9wcf2v84vtd",
+        "slot_id": "tue-10-11",
+        "day": "tuesday",
+        "time": "10:00 - 11:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.188Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548orr000av9wci6m7igmk",
+        "slot_id": "tue-13-14",
+        "day": "tuesday",
+        "time": "13:00 - 14:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.199Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ory000bv9wc8ur0xsf9",
+        "slot_id": "tue-14-15",
+        "day": "tuesday",
+        "time": "14:00 - 15:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.206Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548os4000cv9wccd95x8r0",
+        "slot_id": "tue-15-16",
+        "day": "tuesday",
+        "time": "15:00 - 16:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.212Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548osa000dv9wcjx7u9k1y",
+        "slot_id": "tue-16-17",
+        "day": "tuesday",
+        "time": "16:00 - 17:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.219Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548osj000ev9wcsg1xnt8x",
+        "slot_id": "wed-08-09",
+        "day": "wednesday",
+        "time": "08:00 - 09:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.228Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548osv000fv9wcf4hmelqv",
+        "slot_id": "wed-09-10",
+        "day": "wednesday",
+        "time": "09:00 - 10:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.239Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ot9000gv9wc8hfswb0c",
+        "slot_id": "wed-10-11",
+        "day": "wednesday",
+        "time": "10:00 - 11:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.254Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oth000hv9wcbg4cczwc",
+        "slot_id": "wed-13-14",
+        "day": "wednesday",
+        "time": "13:00 - 14:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.261Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548otn000iv9wcnmcnb94g",
+        "slot_id": "wed-14-15",
+        "day": "wednesday",
+        "time": "14:00 - 15:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.268Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ott000jv9wcqaal3ocz",
+        "slot_id": "wed-15-16",
+        "day": "wednesday",
+        "time": "15:00 - 16:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.273Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ou1000kv9wcwna3w3jq",
+        "slot_id": "wed-16-17",
+        "day": "wednesday",
+        "time": "16:00 - 17:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.282Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oub000lv9wc8v6c74up",
+        "slot_id": "thu-08-09",
+        "day": "thursday",
+        "time": "08:00 - 09:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.292Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oun000mv9wc77aj2zei",
+        "slot_id": "thu-09-10",
+        "day": "thursday",
+        "time": "09:00 - 10:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.304Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ov0000nv9wcrp2goos7",
+        "slot_id": "thu-10-11",
+        "day": "thursday",
+        "time": "10:00 - 11:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.316Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ov7000ov9wcm4mi2dbg",
+        "slot_id": "thu-13-14",
+        "day": "thursday",
+        "time": "13:00 - 14:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.324Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ove000pv9wcavsa4f77",
+        "slot_id": "thu-14-15",
+        "day": "thursday",
+        "time": "14:00 - 15:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.331Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ovn000qv9wckom73g4y",
+        "slot_id": "thu-15-16",
+        "day": "thursday",
+        "time": "15:00 - 16:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.339Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ow0000rv9wchn6tra70",
+        "slot_id": "thu-16-17",
+        "day": "thursday",
+        "time": "16:00 - 17:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.352Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548owh000sv9wcz9l5kfxs",
+        "slot_id": "sat-08-09",
+        "day": "saturday",
+        "time": "08:00 - 09:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.369Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548owu000tv9wcz0tgx9qq",
+        "slot_id": "sat-09-10",
+        "day": "saturday",
+        "time": "09:00 - 10:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.382Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ox1000uv9wctner9vg8",
+        "slot_id": "sat-10-11",
+        "day": "saturday",
+        "time": "10:00 - 11:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.389Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548ox8000vv9wc5hz6bfrh",
+        "slot_id": "sat-13-14",
+        "day": "saturday",
+        "time": "13:00 - 14:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.397Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oxe000wv9wcjv10rf1i",
+        "slot_id": "sat-14-15",
+        "day": "saturday",
+        "time": "14:00 - 15:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.402Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oxm000xv9wci5b4ztbx",
+        "slot_id": "sat-15-16",
+        "day": "saturday",
+        "time": "15:00 - 16:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.410Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      },
+      {
+        "id": "cmm548oxv000yv9wcfu2uqh7z",
+        "slot_id": "sat-16-17",
+        "day": "saturday",
+        "time": "16:00 - 17:00",
+        "total_vacancies": 20,
+        "created_at": "2026-02-27T16:37:56.420Z",
+        "updated_at": "2026-02-27T17:19:29.315Z"
+      }
+    ]
+  }
+]
